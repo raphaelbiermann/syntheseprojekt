@@ -1,0 +1,9 @@
+[0] Config.pm:311> INFO - This is Biber 2.16
+[0] Config.pm:314> INFO - Logfile is '/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/Statusbericht/.texpadtmp/Ohne Titel 2.blg'
+[119] biber-darwin:340> INFO - === Mon Jul  5, 2021, 15:54:40
+[142] Biber.pm:415> INFO - Reading '/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/Statusbericht/.texpadtmp/Ohne Titel 2.bcf'
+[290] Biber.pm:952> INFO - Found 0 citekeys in bib section 0
+[301] Utils.pm:395> WARN - The file '/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/Statusbericht/.texpadtmp/Ohne Titel 2.bcf' does not contain any citations!
+[316] bbl.pm:654> INFO - Writing '/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/Statusbericht/.texpadtmp/Ohne Titel 2.bbl' with encoding 'UTF-8'
+[316] bbl.pm:757> INFO - Output to /Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/Statusbericht/.texpadtmp/Ohne Titel 2.bbl
+[317] Biber.pm:128> INFO - WARNINGS: 1

@@ -1,0 +1,135 @@
+Terminals unused in grammar
+
+    GLEICH
+    SEMIKOLON
+    OTHER
+
+
+Grammar
+
+    0 $accept: prog $end
+
+    1 prog: stmts
+
+    2 stmts: %empty
+    3      | stmt stmts
+
+    4 stmt: ZAHL PLUS ZAHL
+    5     | ZAHL MAL ZAHL
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    ZAHL <zahl> (258) 4 5
+    PLUS (259) 4
+    GLEICH (260)
+    SEMIKOLON (261)
+    OTHER (262)
+    MAL (263) 5
+
+
+Nonterminals, with rules where they appear
+
+    $accept (9)
+        on left: 0
+    prog (10)
+        on left: 1
+        on right: 0
+    stmts (11)
+        on left: 2 3
+        on right: 1 3
+    stmt (12)
+        on left: 4 5
+        on right: 3
+
+
+State 0
+
+    0 $accept: • prog $end
+
+    ZAHL  shift, and go to state 1
+
+    $default  reduce using rule 2 (stmts)
+
+    prog   go to state 2
+    stmts  go to state 3
+    stmt   go to state 4
+
+
+State 1
+
+    4 stmt: ZAHL • PLUS ZAHL
+    5     | ZAHL • MAL ZAHL
+
+    PLUS  shift, and go to state 5
+    MAL   shift, and go to state 6
+
+
+State 2
+
+    0 $accept: prog • $end
+
+    $end  shift, and go to state 7
+
+
+State 3
+
+    1 prog: stmts •
+
+    $default  reduce using rule 1 (prog)
+
+
+State 4
+
+    3 stmts: stmt • stmts
+
+    ZAHL  shift, and go to state 1
+
+    $default  reduce using rule 2 (stmts)
+
+    stmts  go to state 8
+    stmt   go to state 4
+
+
+State 5
+
+    4 stmt: ZAHL PLUS • ZAHL
+
+    ZAHL  shift, and go to state 9
+
+
+State 6
+
+    5 stmt: ZAHL MAL • ZAHL
+
+    ZAHL  shift, and go to state 10
+
+
+State 7
+
+    0 $accept: prog $end •
+
+    $default  accept
+
+
+State 8
+
+    3 stmts: stmt stmts •
+
+    $default  reduce using rule 3 (stmts)
+
+
+State 9
+
+    4 stmt: ZAHL PLUS ZAHL •
+
+    $default  reduce using rule 4 (stmt)
+
+
+State 10
+
+    5 stmt: ZAHL MAL ZAHL •
+
+    $default  reduce using rule 5 (stmt)

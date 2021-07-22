@@ -1,0 +1,193 @@
+Terminals unused in grammar
+
+    GLEICH
+    SEMIKOLON
+    OTHER
+    RETURN
+
+
+State 12 conflicts: 1 shift/reduce
+State 13 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: prog $end
+
+    1 prog: ausdruck
+
+    2 ausdruck: ausdruck PLUS ausdruck
+    3         | term
+
+    4 term: term MAL term
+    5     | faktor
+
+    6 faktor: KLOFFEN ausdruck KLZU
+    7       | ZAHL
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    ZAHL <zahl> (258) 7
+    PLUS (259) 2
+    GLEICH (260)
+    SEMIKOLON (261)
+    OTHER (262)
+    MAL (263) 4
+    RETURN (264)
+    KLOFFEN (265) 6
+    KLZU (266) 6
+
+
+Nonterminals, with rules where they appear
+
+    $accept (12)
+        on left: 0
+    prog (13)
+        on left: 1
+        on right: 0
+    ausdruck <zahl> (14)
+        on left: 2 3
+        on right: 1 2 6
+    term <zahl> (15)
+        on left: 4 5
+        on right: 3 4
+    faktor <zahl> (16)
+        on left: 6 7
+        on right: 5
+
+
+State 0
+
+    0 $accept: • prog $end
+
+    ZAHL     shift, and go to state 1
+    KLOFFEN  shift, and go to state 2
+
+    prog      go to state 3
+    ausdruck  go to state 4
+    term      go to state 5
+    faktor    go to state 6
+
+
+State 1
+
+    7 faktor: ZAHL •
+
+    $default  reduce using rule 7 (faktor)
+
+
+State 2
+
+    6 faktor: KLOFFEN • ausdruck KLZU
+
+    ZAHL     shift, and go to state 1
+    KLOFFEN  shift, and go to state 2
+
+    ausdruck  go to state 7
+    term      go to state 5
+    faktor    go to state 6
+
+
+State 3
+
+    0 $accept: prog • $end
+
+    $end  shift, and go to state 8
+
+
+State 4
+
+    1 prog: ausdruck •
+    2 ausdruck: ausdruck • PLUS ausdruck
+
+    PLUS  shift, and go to state 9
+
+    $default  reduce using rule 1 (prog)
+
+
+State 5
+
+    3 ausdruck: term •
+    4 term: term • MAL term
+
+    MAL  shift, and go to state 10
+
+    $default  reduce using rule 3 (ausdruck)
+
+
+State 6
+
+    5 term: faktor •
+
+    $default  reduce using rule 5 (term)
+
+
+State 7
+
+    2 ausdruck: ausdruck • PLUS ausdruck
+    6 faktor: KLOFFEN ausdruck • KLZU
+
+    PLUS  shift, and go to state 9
+    KLZU  shift, and go to state 11
+
+
+State 8
+
+    0 $accept: prog $end •
+
+    $default  accept
+
+
+State 9
+
+    2 ausdruck: ausdruck PLUS • ausdruck
+
+    ZAHL     shift, and go to state 1
+    KLOFFEN  shift, and go to state 2
+
+    ausdruck  go to state 12
+    term      go to state 5
+    faktor    go to state 6
+
+
+State 10
+
+    4 term: term MAL • term
+
+    ZAHL     shift, and go to state 1
+    KLOFFEN  shift, and go to state 2
+
+    term    go to state 13
+    faktor  go to state 6
+
+
+State 11
+
+    6 faktor: KLOFFEN ausdruck KLZU •
+
+    $default  reduce using rule 6 (faktor)
+
+
+State 12
+
+    2 ausdruck: ausdruck • PLUS ausdruck
+    2         | ausdruck PLUS ausdruck •
+
+    PLUS  shift, and go to state 9
+
+    PLUS      [reduce using rule 2 (ausdruck)]
+    $default  reduce using rule 2 (ausdruck)
+
+
+State 13
+
+    4 term: term • MAL term
+    4     | term MAL term •
+
+    MAL  shift, and go to state 10
+
+    MAL       [reduce using rule 4 (term)]
+    $default  reduce using rule 4 (term)
