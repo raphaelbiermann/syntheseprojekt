@@ -1518,14 +1518,70 @@ Die genRTLIL Funktion besteht zu einem Teil aus einer großen Case-Bedingung.
 Diese Blöcke werden ignoriert, da sie Überbleibsel der simplify-Funktion sind oder mit anderen Knoten behandelt werden. Hier ist auffällig, dass unteranderem die Generate-Blöcke enthalten sind, die in der simplify-Funktion ausgerollt werden.
 
 \section{Prozessgenerator}
+%TODO Wann relevant, woraus besteht er
+Die gesamte Prozessstruktur sieht so aus:
+\begin{center}
+\includegraphics[scale=0.5]{process.png}
+\end{center}
+%TODO Bausteine aus Grafik verknüpfen, Strukturen zuordnen
+%Zuweisungen immer mit actions Stapel.
+%TODO was passiert mit actions Stapel später?
+Ein Objekt \textit{proc} vom Typ RTLIL::Process wird bei Ausführung der Funktion \textit{ProcessGenerator()} erstellt.
+Die Funktion wird ausgeführt, wenn die genRTLIL Funktion auf eine AST-Node des Typs \textit{AST\_ALWAYS} oder \textit{AST\_INITIAL} trifft:
+\begin{lstlisting}[language=C++]
+	// use ProcessGenerator for always blocks
+	case AST_ALWAYS: {
+			AstNode *always = this->clone();
+			ProcessGenerator generator(always);
+			ignoreThisSignalsInInitial.append(generator.outputSignals);
+			delete always;
+		} break;
 
-Der Prozessgenerator behandelt always-Blöcke.
+	case AST_INITIAL: {
+			AstNode *always = this->clone();
+			ProcessGenerator generator(always, ignoreThisSignalsInInitial);
+			delete always;
+		} break;
+\end{lstlisting}
+Der Datentyp RTLIL::Process besitzt die Elemente aus der Grafik:
+\begin{lstlisting}[language=C++]
+struct RTLIL::Process : public RTLIL::AttrObject
+{
+	RTLIL::IdString name;
+	RTLIL::CaseRule root_case;
+	std::vector<RTLIL::SyncRule*> syncs;
+
+	~Process();
+
+	template<typename T> void rewrite_sigspecs(T &functor);
+	template<typename T> void rewrite_sigspecs2(T &functor);
+	RTLIL::Process *clone() const;
+};
+\end{lstlisting}
+Ein RTLIL::CaseRule Objekt für den hierarisch höchsten \textit{root\_case}, sowie einen Vektorstapel \textit{syncs} für Synchronisationsregeln mit dem Takt.
+Jedes RTLIL::CaseRule Objekt besitzt ein oder mehrere RTLIL::SwitchRule Objekte in einem Vektorstapel, einen Vektor \textit{actions} für Zuweisungen (später detaillierter) sowie einen Vektor mit Signalen \textit{compare}.\\
+Die RTLIL::SyncRule Objekte enthalten die Zuweisungen, die getaktet erfolgen, in einem Vektorstapel \textit{actions}:
+\begin{lstlisting}[language=C++]
+struct RTLIL::SyncRule
+{
+	RTLIL::SyncType type;
+	RTLIL::SigSpec signal;
+	std::vector<RTLIL::SigSig> actions;
+
+	template<typename T> void rewrite_sigspecs(T &functor);
+	template<typename T> void rewrite_sigspecs2(T &functor);
+	RTLIL::SyncRule *clone() const;
+};
+\end{lstlisting}
+Der Vektorstapel \textit{actions} existiert auch in RTLIL::CaseRule.\\
+%Warum nicht CaseRule und SwitchRule Hierarchie anders herum?
+%TODO wofür compare?
 Laut Yosys-Manual passiert zuerst folgendes:
-\\
-\\
+%TODO Analyse
 \textit{
 On startup the ProcessGenerator generates a new RTLIL::Process object with an empty root case and initializes its state variables as described above. Then the RTLIL::SyncRule objects are created using the synchronization events from the AST\_ALWAYS node and the initial values of subst\_lvalue\_from and subst\_lvalue\_to. Then the AST for this process is evaluated recursively.
 }
+%TODO Syncrule Objekt (besitzt assignments)
 \\
 \\
 Dies deckt sich mit dem Quellcode:
@@ -1561,8 +1617,48 @@ for (auto child : always->children)
 	proc->syncs.push_back(syncrule);
 			}
 \end{lstlisting}
+Hier ist sichtbar, dass die Funktion \textit{addChunkActions} hier zu dem Vectorstapel \textit{actions} die Zuweisungen aus subst\_lvalue\_from und subst\_lvalue\_to hinzufügt:
+%addChunkActions für Zuweisung ausführen
+\begin{lstlisting}[language=C++]
+void addChunkActions(std::vector<RTLIL::SigSig> &actions, RTLIL::SigSpec lvalue, RTLIL::SigSpec rvalue, bool inSyncRule = false)
+	{
+		if (inSyncRule && initSyncSignals.size() > 0) {
+			init_lvalue.append(lvalue.extract(initSyncSignals));
+			init_rvalue.append(lvalue.extract(initSyncSignals, &rvalue));
+			lvalue.remove2(initSyncSignals, &rvalue);
+		}
+		log_assert(lvalue.size() == rvalue.size());
+
+		int offset = 0;
+		for (auto &lvalue_c : lvalue.chunks()) {
+			RTLIL::SigSpec lhs = lvalue_c;
+			RTLIL::SigSpec rhs = rvalue.extract(offset, lvalue_c.width);
+			if (inSyncRule && lvalue_c.wire && lvalue_c.wire->get_bool_attribute("\\nosync"))
+				rhs = RTLIL::SigSpec(RTLIL::State::Sx, rhs.size());
+			remove_unwanted_lvalue_bits(lhs, rhs);
+			actions.push_back(RTLIL::SigSig(lhs, rhs));
+			offset += lhs.size();
+		}
+	}
+
+\end{lstlisting}
+
+Die Zuweisung besteht aus zwei Signalen \textit{SigSpec}, die zu einer Signalverknüpfung \textit{SigSig} werden, die auf den Stapel \textit{actions}, der als Parameter übergeben wird, gelegt wird.\\
+Ob der \textit{actions}-Stapel aus der SyncRule oder aus der CaseRule stammt, hängt davon ab, ob die Zuweisung innerhalb eines Prozesses (getaktet oder Synchronisation mit Signal) oder außerhalb stattfindet.
+Beispielhaft ist eine Zuweisung mit Inertialwerten, die ohne Synchronisation stattfindet:
+\begin{lstlisting}[language=C++]
+// create initial assignments for the temporary signals
+		if ((flag_nolatches || always->get_bool_attribute("\\nolatches") || current_module->get_bool_attribute("\\nolatches")) && !found_clocked_sync) {
+			subst_rvalue_map = subst_lvalue_from.to_sigbit_dict(RTLIL::SigSpec(RTLIL::State::Sx, GetSize(subst_lvalue_from)));
+		} else {
+			addChunkActions(current_case->actions, subst_lvalue_to, subst_lvalue_from);
+		}
+\end{lstlisting}
+%zuweisungen untersuchen, wann welcher actions stapel, was passiert mit actions stapel 
+
+
 %Strukturen
-\subsection{Strukturen}
+\subsection{Datenstrukturen und Variablen}
 \begin{enumerate}
   \item \textit{lvalue}
 \\
@@ -1620,6 +1716,51 @@ SigSpec besitzt remove Funktionen, um ein Muster zu löschen. Das Muster kann au
 	void remove2(const std::set<RTLIL::SigBit> &pattern, RTLIL::SigSpec *other);
 \end{lstlisting}
 
+\item{\textit{SigBit}}
+Ein einzelnes Bit eines Signals. Ist als Vektor in \textit{SigSpec} enthalten.
+\begin{lstlisting}[language=C++]
+struct RTLIL::SigBit
+{
+	RTLIL::Wire *wire;
+	union {
+		RTLIL::State data; // used if wire == NULL
+		int offset;        // used if wire != NULL
+	};
+
+	SigBit();
+	SigBit(RTLIL::State bit);
+	SigBit(bool bit);
+	SigBit(RTLIL::Wire *wire);
+	SigBit(RTLIL::Wire *wire, int offset);
+	SigBit(const RTLIL::SigChunk &chunk);
+	SigBit(const RTLIL::SigChunk &chunk, int index);
+	SigBit(const RTLIL::SigSpec &sig);
+	SigBit(const RTLIL::SigBit &sigbit);
+	RTLIL::SigBit &operator =(const RTLIL::SigBit &other) = default;
+
+	bool operator <(const RTLIL::SigBit &other) const;
+	bool operator ==(const RTLIL::SigBit &other) const;
+	bool operator !=(const RTLIL::SigBit &other) const;
+	unsigned int hash() const;
+};
+\end{lstlisting}
+
+Ein SigBit besteht aus einem \textit{RTLIL::State} Objekt für die logischen Zustände 0,1,X,Z, \textit{don't care} und dem internen Zustand \textit{marker}.
+\begin{lstlisting}[language=C++]
+namespace RTLIL
+{
+	enum State : unsigned char {
+		S0 = 0,
+		S1 = 1,
+		Sx = 2, // undefined value or conflict
+		Sz = 3, // high-impedance / not-connected
+		Sa = 4, // don't care (used only in cases)
+		Sm = 5  // marker (used internally by some passes)
+	};
+\end{lstlisting}
+
+
+
 \item Ersetzungsmuster in \textit{subst\_rvalue\_map} und \textit{subst\_lvalue\_map}.
 \begin{lstlisting}[language=C++]
 	// This map contains the replacement pattern to be used in the right hand side
@@ -1639,6 +1780,7 @@ SigSpec besitzt remove Funktionen, um ein Muster zu löschen. Das Muster kann au
 Stackmaps (Yosys-Customs) sind ähnlich wie Maps in C++ mit der Erweiterung, dass Zustände gespeichert und wiederhergestellt werden können. Elemente können mit einem Schlüssel gespeichert werden und mit diesem Schlüssel wieder ausgelesen werden (vgl. Hashmap).
 
 \item \textit{current\_state} \\
+%TODO Hashes
 Ein konstantes Hashlib \textit{dict} Objekt. Ein Dictionary ist ähnlich wie eine  Hashmap. Es können jedoch nur Paare von gleichem Datentyp gespeichert werden. Ein Dictionary ist jedoch schneller und behält seine Ordnung.
 \item \textit{current\_case}\\
 \begin{lstlisting}[language=C++]
@@ -1659,15 +1801,22 @@ struct RTLIL::CaseRule : public RTLIL::AttrObject
 };
 \end{lstlisting}
 Laut Manual der aktuelle Case der gerade gefüllt wird. Actions sind Zuweisungen. Ein Case kann außerdem weitere Switches besitzen.
+Wenn die Methode ProcessGenerator() ausgeführt wird, wird der root-case der Anweisung zum current\_case.
+
+
 \item \textit{SigSig}\\
 Verbindungen von zwei Signalen werden als Paar aus zwei SigSpec Signalen SigSig implementiert:
 \begin{lstlisting}[language=C++]
 	typedef std::pair<SigSpec, SigSpec> SigSig;
 \end{lstlisting}
 
+\item \textit{pool}\\
+Laut Manual:\\
+Pool ist eine Container Datenstruktur und ersetzt std::unordered\_set.
+
 \end{enumerate}
 
-
+%Non-Blocking
 
 \subsection{Non-Blocking Assignments}
 
@@ -1737,6 +1886,7 @@ cases within it.}
 \\
 Alle vorherigen Zuweisungen werden bei einem Non-Blocking Assignment überschrieben.
 
+%TODO Was macht diese for-schleife?
 \begin{lstlisting}[language=C++]
 	pool<SigBit> lvalue_sigbits;
 	for (int i = 0; i < GetSize(lvalue); i++) {
@@ -1748,6 +1898,11 @@ Alle vorherigen Zuweisungen werden bei einem Non-Blocking Assignment überschrie
 			lvalue_sigbits.insert(lvalue[i]);
 				}
 \end{lstlisting}
+Eine Datenstruktur pool, die Sigbits also einzelne Signalbits enthält, wird erstellt.
+Das SigSpec Objekt \textit{lvalue} wird durchiteriert. Dies geschieht bitweise; in der SigSpec Struktur ist der Operator [] für den Zugriff auf den Vector bits\_ definiert.
+Falls das aktuelle Objekt in lvalue[i] noch nicht in lvalue\_sigbits enthalten ist, wird es im \textit{else}-Fall hinzugefügt. Ansonsten wird das Objekt aus \textit{lvalue} und \textit{unmapped\_lvalue}, die den gleichen Wert enthalten, sowie \textit{rvalue} entfernt. Das Post-Dekrement bedeutet, dass \textit{i} aus \textit{rvalue} gelöscht wird und erst danach dekrementiert wird.
+
+
 
 lvalue ist ein SigSpec Objekt.
 Die SigSpec Struktur beschreibt ein Signal und hat einige Funktionen zur Manipulation.

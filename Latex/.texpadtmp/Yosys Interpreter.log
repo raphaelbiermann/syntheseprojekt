@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.4.22)  16 JUL 2021 16:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.4.22)  11 AUG 2021 12:54
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -860,114 +860,115 @@ Underfull \hbox (badness 10000) in paragraph at lines 1489--1493
  []
 
 [31]
-Underfull \hbox (badness 10000) in paragraph at lines 1522--1532
+<./images//process.png, id=1212, 750.805pt x 344.28625pt>
+File: ./images//process.png Graphic file (type png)
+<use ./images//process.png>
+Package pdftex.def Info: ./images//process.png  used on input line 1524.
+(pdftex.def)             Requested size: 375.40158pt x 172.1427pt.
+ [32 <./images//process.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1576--1588
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 1522--1532
-
- []
-
-
-Overfull \hbox (5.11272pt too wide) in paragraph at lines 1567--1570
+[33]
+Overfull \hbox (5.11272pt too wide) in paragraph at lines 1663--1666
 \OT1/cmr/m/n/10.95 Bekommt R[]uckgabe der genRT-LIL() Funk-ti-on zu-ge-wie-sen. R[]uckgabetyp ist RT-LIL::SigSpec 
  []
 
-[32] [33]
-Underfull \hbox (badness 10000) in paragraph at lines 1643--1644
+[34] [35]
+Underfull \hbox (badness 10000) in paragraph at lines 1785--1786
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 1674--1680
+[36]
+Underfull \hbox (badness 10000) in paragraph at lines 1823--1829
 
  []
 
-[34]
-Overfull \hbox (0.9151pt too wide) in paragraph at lines 1706--1707
+[37]
+Overfull \hbox (0.9151pt too wide) in paragraph at lines 1855--1856
 []\OT1/cmr/m/n/10.95 Im Par-ser wer-den die Wer-te der lin-ken und rech-ten Sei-te der Zu-wei-sung wie folgt []ubergeben: 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1724--1727
+Underfull \hbox (badness 10000) in paragraph at lines 1873--1876
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1735--1739
+Underfull \hbox (badness 10000) in paragraph at lines 1884--1888
 
  []
 
-[35] [36]
-Underfull \hbox (badness 10000) in paragraph at lines 1827--1833
+[38] [39]
+Underfull \hbox (badness 10000) in paragraph at lines 1982--1988
 
  []
 
 
-Overfull \hbox (13.79922pt too wide) in paragraph at lines 1827--1833
+Overfull \hbox (13.79922pt too wide) in paragraph at lines 1982--1988
 \OT1/cmr/m/n/10.95 ([]$\OT1/cmtt/m/n/10.95 https : / / stackoverflow . com / questions / 15451287 / what-[]does-[]iterator-[]second-[]mean$[]\OT1/cmr/m/n/10.95 ) 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1852--1856
+Underfull \hbox (badness 10000) in paragraph at lines 2007--2011
 
  []
 
-[37] [38]
-Overfull \hbox (20.58481pt too wide) in paragraph at lines 1941--1942
+[40] [41]
+Overfull \hbox (20.58481pt too wide) in paragraph at lines 2096--2097
 []\OT1/cmr/m/it/10.95 Append this[]case[]eq[]lvalue to subst[]lvalue[]from and ap-pend this[]case[]eq[]ltemp to subst[]lvalue[]to. 
  []
 
 
-Overfull \hbox (3.71466pt too wide) in paragraph at lines 1981--1982
+Overfull \hbox (3.71466pt too wide) in paragraph at lines 2136--2137
 []\OT1/cmr/m/it/10.95 The si-gnals from this[]case[]eq[]lvalue are re-mo-ved from the subst[]rvalue[]from/subst[]rvalue[]to-
  []
 
-[39]
-Overfull \hbox (34.74791pt too wide) in paragraph at lines 1982--1983
+
+Overfull \hbox (34.74791pt too wide) in paragraph at lines 2137--2138
 []\OT1/cmr/m/it/10.95 The va-lue of this[]case[]eq[]lvalue is ap-pen-ded to subst[]rvalue[]from and the va-lue of this[]case[]eq[]ltemp
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 2013--2016
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2013--2016
+[42]
+Underfull \hbox (badness 10000) in paragraph at lines 2168--2171
 
  []
 
-[40]
-Underfull \hbox (badness 10000) in paragraph at lines 2048--2053
+
+Underfull \hbox (badness 10000) in paragraph at lines 2168--2171
 
  []
 
-[41]
+[43]
+Underfull \hbox (badness 10000) in paragraph at lines 2203--2208
 
-LaTeX Warning: Empty bibliography on input line 2098.
+ []
 
-[42] (/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/.texpadtmp/Yosys Interpreter.aux)
+[44]
+
+LaTeX Warning: Empty bibliography on input line 2253.
+
+[45] (/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/.texpadtmp/Yosys Interpreter.aux)
 Package rerunfilecheck Info: File `"Yosys Interpreter".out' has not changed.
-(rerunfilecheck)             Checksum: 0DB416CA391E3EFFA86C312DFB9746C7;3335.
+(rerunfilecheck)             Checksum: 4AB6A9222567D32339BFB5D7B0D4F603;3436.
 Package logreq Info: Writing requests to '"Yosys Interpreter".run.xml'.
 \openout1 = `"Yosys Interpreter.run.xml"'.
 
  ) 
 Here is how much of TeX's memory you used:
- 22116 strings out of 478994
- 364570 string characters out of 5858184
+ 22298 strings out of 478994
+ 367260 string characters out of 5858184
  1453973 words of memory out of 5000000
- 38013 multiletter control sequences out of 15000+600000
+ 38087 multiletter control sequences out of 15000+600000
  411790 words of font info for 55 fonts, out of 8000000 for 9000
  1143 hyphenation exceptions out of 8191
  73i,6n,74p,752b,2241s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb>
-Output written on "/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/.texpadtmp/Yosys Interpreter.pdf" (43 pages, 709174 bytes).
+Output written on "/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/.texpadtmp/Yosys Interpreter.pdf" (46 pages, 741719 bytes).
 PDF statistics:
- 1954 PDF objects out of 2073 (max. 8388607)
- 1870 compressed objects within 19 object streams
- 1364 named destinations out of 1440 (max. 500000)
- 184 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2095 PDF objects out of 2487 (max. 8388607)
+ 2004 compressed objects within 21 object streams
+ 1471 named destinations out of 1728 (max. 500000)
+ 189 words of extra memory for PDF output out of 10000 (max. 10000000)
 
