@@ -35,10 +35,10 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.3.1}Datenstrukturen und Variablen}{34}{subsection.3.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.2}Non-Blocking Assignments}{37}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.2}Non-Blocking Assignments}{38}{subsection.3.3.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.3}Blocking-Assignments}{40}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.3}Blocking-Assignments}{41}{subsection.3.3.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.4}Cases und if-Anweisungen}{40}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.3.4}Cases und if-Anweisungen}{41}{subsection.3.3.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.5}Proc Pass}{43}{subsection.3.3.5}%
+\contentsline {subsection}{\numberline {3.3.5}Proc Pass}{44}{subsection.3.3.5}%

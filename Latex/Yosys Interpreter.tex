@@ -6,10 +6,11 @@
 \usepackage[style=numeric]{biblatex}
 \usepackage{caption}
 \usepackage{hyperref}
+\usepackage{verbatim}
 \addbibresource{sources.bib}
 \graphicspath{ {./images/} }
 
-
+\pagestyle{headings}
 \usepackage{xcolor}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -1619,6 +1620,7 @@ for (auto child : always->children)
 \end{lstlisting}
 Hier ist sichtbar, dass die Funktion \textit{addChunkActions} hier zu dem Vectorstapel \textit{actions} die Zuweisungen aus subst\_lvalue\_from und subst\_lvalue\_to hinzufügt:
 %addChunkActions für Zuweisung ausführen
+%TODO wie wird eine Zuweisung aufgesplittet?
 \begin{lstlisting}[language=C++]
 void addChunkActions(std::vector<RTLIL::SigSig> &actions, RTLIL::SigSpec lvalue, RTLIL::SigSpec rvalue, bool inSyncRule = false)
 	{
@@ -1655,6 +1657,7 @@ Beispielhaft ist eine Zuweisung mit Inertialwerten, die ohne Synchronisation sta
 		}
 \end{lstlisting}
 %zuweisungen untersuchen, wann welcher actions stapel, was passiert mit actions stapel 
+\textit{Wo wird der actions-Stapel weiterverarbeitet?}
 
 
 %Strukturen
@@ -1759,7 +1762,50 @@ namespace RTLIL
 	};
 \end{lstlisting}
 
+%SigChunks
+\item \textit{RTLIL::SigChunk}
+\begin{lstlisting}[language=C++]
+struct RTLIL::SigChunk
+{
+	RTLIL::Wire *wire;
+	std::vector<RTLIL::State> data; // only used if wire == NULL, LSB at index 0
+	int width, offset;
 
+	SigChunk();
+	SigChunk(const RTLIL::Const &value);
+	SigChunk(RTLIL::Wire *wire);
+	SigChunk(RTLIL::Wire *wire, int offset, int width = 1);
+	SigChunk(const std::string &str);
+	SigChunk(int val, int width = 32);
+	SigChunk(RTLIL::State bit, int width = 1);
+	SigChunk(RTLIL::SigBit bit);
+	SigChunk(const RTLIL::SigChunk &sigchunk);
+	RTLIL::SigChunk &operator =(const RTLIL::SigChunk &other) = default;
+
+	RTLIL::SigChunk extract(int offset, int length) const;
+	inline int size() const { return width; }
+
+	bool operator <(const RTLIL::SigChunk &other) const;
+	bool operator ==(const RTLIL::SigChunk &other) const;
+	bool operator !=(const RTLIL::SigChunk &other) const;
+};
+\end{lstlisting}
+Ein Ausschnitt eines Signals mit bestimmter Länge \textit{width} und \textit{offset}.
+%compare
+\item \textit{compare} Vektor in \textit{RTLIL::CaseRule}
+In der \textit{CaseRule} ist dieser Vektor enthalten. Vermutlich werden dort Signale für den Vergleich mit der \textit{RTLIL::SwitchRule} gespeichert.
+\begin{lstlisting}[language=C++]
+struct RTLIL::CaseRule : public RTLIL::AttrObject
+{
+	std::vector<RTLIL::SigSpec> compare;
+\end{lstlisting}
+%TODO vergleich mit switchrule?
+In der \textit{RTLIL::SwitchRule} ist ein Signal als \textit{RTLIL::SigSpec} Objekt gespeichert:
+\begin{lstlisting}[language=C++]
+struct RTLIL::SwitchRule : public RTLIL::AttrObject
+{
+	RTLIL::SigSpec signal;
+\end{lstlisting}
 
 \item Ersetzungsmuster in \textit{subst\_rvalue\_map} und \textit{subst\_lvalue\_map}.
 \begin{lstlisting}[language=C++]
@@ -1885,7 +1931,111 @@ cases within it.}
 \\
 \\
 Alle vorherigen Zuweisungen werden bei einem Non-Blocking Assignment überschrieben.
+\begin{lstlisting}[language=C++]
+removeSignalFromCaseTree(lvalue, current_case);
+\end{lstlisting}
+Die Funktion removeSignalFromCaseTree() löscht alle Zuweisungen in einem root-case und seinen Ableitungen. Beispiel: a = 23; if (b) a = 42; a = 0; Die ersten beiden Zuweisungen werden überschrieben. Die dritte Zuweisung wird ausgeführt.
+Quellcode der Funktion:
+%removeSignalFromCaseTree zum Löschen vorheriger Zuweisungen
+\begin{lstlisting}[language=C++]
+void removeSignalFromCaseTree(const RTLIL::SigSpec &pattern, RTLIL::CaseRule *cs)
+	{
+		for (auto it = cs->actions.begin(); it != cs->actions.end(); it++)
+			it->first.remove2(pattern, &it->second);
 
+		for (auto it = cs->switches.begin(); it != cs->switches.end(); it++)
+			for (auto it2 = (*it)->cases.begin(); it2 != (*it)->cases.end(); it2++)
+				removeSignalFromCaseTree(pattern, *it2);
+	}
+
+\end{lstlisting}
+Der Vektorstapel \textit{actions} wird durchiteriert. 
+%first, second
+Die \textit{RTLIL::SigSig} Objekte sind C++ \textit{std::pair} Objekte mit den beiden verknüpften Signalen als Paar.
+%TODO erstes Paarobjekt = linke Seite einer Zuweisung?
+Hier wird also mit \textit{first} auf das erste Paarobjekt zugegriffen und darauf die \textit{RTLIL::SigSpec remove2()} Funktion angewendet.
+
+
+%remove2
+Die Funktion \textit{remove2()}:
+\begin{lstlisting}[language=C++]
+void RTLIL::SigSpec::remove2(const RTLIL::SigSpec &pattern, RTLIL::SigSpec *other)
+{
+	if (other)
+		cover("kernel.rtlil.sigspec.remove_other");
+	else
+		cover("kernel.rtlil.sigspec.remove");
+
+	unpack();
+	if (other != NULL) {
+		log_assert(width_ == other->width_);
+		other->unpack();
+	}
+
+	for (int i = GetSize(bits_) - 1; i >= 0; i--)
+	{
+		if (bits_[i].wire == NULL) continue;
+
+		for (auto &pattern_chunk : pattern.chunks())
+			if (bits_[i].wire == pattern_chunk.wire &&
+				bits_[i].offset >= pattern_chunk.offset &&
+				bits_[i].offset < pattern_chunk.offset + pattern_chunk.width) {
+				bits_.erase(bits_.begin() + i);
+				width_--;
+				if (other != NULL) {
+					other->bits_.erase(other->bits_.begin() + i);
+					other->width_--;
+				}
+				break;
+			}
+	}
+
+	check();
+}
+\end{lstlisting}
+Die Funktion \textit{unpack()} erstellt einen Bitvektor aus dem aktuellen SigSpec Objekt:
+%unpack Funktion
+\begin{lstlisting}[language=C++]
+void RTLIL::SigSpec::unpack() const
+{
+	RTLIL::SigSpec *that = (RTLIL::SigSpec*)this;
+
+	if (that->chunks_.empty())
+		return;
+
+	cover("kernel.rtlil.sigspec.convert.unpack");
+	log_assert(that->bits_.empty());
+
+	that->bits_.reserve(that->width_);
+	for (auto &c : that->chunks_)
+		for (int i = 0; i < c.width; i++)
+			that->bits_.push_back(RTLIL::SigBit(c, i));
+
+	that->chunks_.clear();
+	that->hash_ = 0;
+}
+\end{lstlisting}
+Iteriert durch \textit{chunks\_} Stapel. Wenn der Stapel leer ist, wird nichts zurück gegeben. Ansonsten werden die \textit{RTLIL::SigChunk} Objekte, die auf dem Stapel liegen, auf die Länge ihrer Wortbreite iteriert, und auf einen Stapel bits\_ des aktuellen \textit{RTLIL::SigSpec} Objekts gelegt.
+
+
+Danach wird der Bitvektor durchiteriert. Die Objekte, die auf dem Vektorstapel liegen, sind vom Typ \textit{RTLIL::SigBit}. Einzelne Bits eines Signals können einem Verilog \textit{Wire} zugewiesen werden. Daher besitzt ein \textit{RTLIL::SigBit} Objekt die Möglichkeit, es mit einem \textit{Wire} zu initialisieren.\\
+Beim Löschen der vorherigen Zuweisungen wird verglichen, ob Wert, Offset und Offset + Wortbreite identisch mit einem Pattern sind, das im Methodenkopf der remove Funktion übergeben wird.
+%TODO womit wird pattern verglichen? Was ist chunk
+Mit \_chunk wird auf 
+Das Pattern, das übergeben wird, ist \textit{lvalue}, also das Signal der linken Zuweisungsseite, dessen ältere Zuweisungen gelöscht werden sollen.
+Sofern dies zutrifft, werden mit der \textit{erase()} Funktion des \textit{bits\_}-Stapels
+
+Zusammenfassung:
+\begin{enumerate}
+  \item Zuweisungsstapel des aktuellen Falls \textit{actions} durchiterieren
+  \item Auf Objekte des Stapels zugreifen (\textit{RTLIL::SigSig Objekte})
+  \item Zweiter Stapel \textit{bits\_} enthält die Bits des Signals von \textit{first}, also der linken Seite.
+  \item Mit Pattern, hier \textit{lvalue}, vergleichen
+  \item Wenn Pattern-Inhalt gleich \textit{bits\_} von linker Zuweisungsseite der Stapelobjekte, dann Löschen der relevanten Bits und Wortlänge verkürzen.
+\end{enumerate}
+\textbf{Also: Zuweisungen mit gleichem \textit{first} Objekt wie lvalue löschen durch vergleichen der actions Stapel Objekte mit lvalue!}
+%wahrscheinlich macht dieser Code etwas anderes.
+\begin{comment}	
 %TODO Was macht diese for-schleife?
 \begin{lstlisting}[language=C++]
 	pool<SigBit> lvalue_sigbits;
@@ -1938,21 +2088,17 @@ void RTLIL::SigSpec::remove(int offset, int length)
 \end{lstlisting}
 
 Das Iterationsobjekt i der for-Schleife ist also hier der Offset vom LSB.
-
-
+\end{comment}
 \item \textit{Add the new assignment to the current\_case.
 }
 \begin{lstlisting}[language=C++]
-lvalue.replace(subst_lvalue_map.stdmap());
-
-if (ast->type == AST_ASSIGN_EQ) {
-	for (int i = 0; i < GetSize(unmapped_lvalue); i++)
-	subst_rvalue_map.set(unmapped_lvalue[i], rvalue[i]);
-}
-removeSignalFromCaseTree(lvalue, current_case);
-remove_unwanted_lvalue_bits(lvalue, rvalue);
 current_case->actions.push_back(RTLIL::SigSig(lvalue, rvalue));
 \end{lstlisting}
+Die \textit{RTLIL::SigSpec} Objekte der Zuweisung werden zu \textit{RTLIL::SigSig} verknüpft und auf den Stapel \textit{actions} von \textit{current\_case} gelegt.
+
+
+\begin{comment}
+	
 
 Die replace() Funktion:
 \begin{lstlisting}[language=C++]
@@ -1979,13 +2125,14 @@ RTLIL::SigBit> &rules, RTLIL::SigSpec *other) const
 
 rules ist in dem Fall subst\_lvalue\_map.stdmap(), also die Map mit temporären Signalen und other ist lvalue.
 
-unpack() legt die Bits eines Signals auf einen Vektorstapel bits\_. Der Vektor kann auch stellenweise ausgelesen werden, was hier im weiteren Verlauf benutzt wird.
+unpack() legt die Bits eines Signals auf einen Vektorstapel \textit{bits\_}. Der Vektor kann auch stellenweise ausgelesen werden, was hier im weiteren Verlauf benutzt wird.
+Danach wird der Vektorstapel \textit{bits\_} %TODO weiter analysieren
 \\
 \\
 find() ist Teil der Hashlib und gibt einen Iterator zurück. Hier wird anscheinend ein dynamisches Objekt \textit{it} erzeugt, das den Wert von bits\_[i] bekommt.
 Am Ende der for-Schleife werden werden die Bitvektorwerte bits\_[i] von other auf das zweite Paar-Objekt von it gesetzt.\\
 (\url{https://stackoverflow.com/questions/15451287/what-does-iterator-second-mean})
-
+\end{comment}
 \end{enumerate}
 
 
@@ -1995,13 +2142,25 @@ Am Ende der for-Schleife werden werden die Bitvektorwerte bits\_[i] von other au
 \textit{When an AST\_ASSIGN\_EQ node is discovered, the following actions are performed by the ProcessGenerator:}
 \begin{enumerate}
   \item \textit{Perform all the steps that would be performed for a nonblocking assignment (see above).}
-  \begin{lstlisting}[language=C++]
+\begin{lstlisting}[language=C++]
  case AST_ASSIGN_EQ:
  case AST_ASSIGN_LE:		
-  \end{lstlisting}
+\end{lstlisting}
   Da kein break; Abbruch der case-Bedingung erfolgt, geht das Programm in den nachfolgenden Case-Fall, der das Non-Blocking-Assignment behandelt.
 \item \textit{Remove the found left-hand-side (before lvalue mapping) from subst\_rvalue\_from and also remove the respective bits from subst\_rvalue\_to.}
-
+%TODO Analysieren
+%könnte der Code davor sein!
+\begin{comment}
+	pool<SigBit> lvalue_sigbits; //leer? count führt do_hash() und do_lookup() aus
+				for (int i = 0; i < GetSize(lvalue); i++) {
+					if (lvalue_sigbits.count(lvalue[i]) > 0) { //? bei nicht-vorkommen einfügen, sonst entfernen
+						unmapped_lvalue.remove(i);
+						lvalue.remove(i); //welche Einträge stehen drin?
+						rvalue.remove(i--);
+					} else
+						lvalue_sigbits.insert(lvalue[i]); //nicht einfügen, weil vorhanden
+				}//wo wird lvalue_sigbits weiterverwendet?
+\end{comment}
 
 
 \item \textit{Append the found left-hand-side (before lvalue mapping) to subst\_rvalue\_from and append the found right-hand-side to subst\_rvalue\_to.}
@@ -2149,7 +2308,7 @@ addChunkActions(current_case->actions, this_case_eq_lvalue, this_case_eq_ltemp);
 
 
 \subsection{Proc Pass}
-Die genannten Aktionen sind in dieser Form noch nicht synthetisierbar. Prozesse werden in erster Linie von einem Behavioural Model in AST Ebene in ein Behavioural Model in RTLIL Ebene überführt. Das Prozesstiming erfolgt in der Realität beispielsweise mit Flipflops, die entsprechend eingesetzt werden müssen. Hierfür sind weitere Passes, also globale Aktionen für das Design erforderlich.\\
+Die genannten Prozesse sind in dieser Form noch nicht synthetisierbar. Prozesse werden in erster Linie von einem Behavioural Model in AST Ebene in ein Behavioural Model in RTLIL Ebene überführt. Das Prozesstiming erfolgt in der Realität beispielsweise mit Flipflops, die entsprechend eingesetzt werden müssen. Hierfür sind weitere Passes, also globale Aktionen, die auf das Design angewendet werden, erforderlich.\\
 Diese werden in proc.cc aufgerufen:
 \begin{lstlisting}[language=C++]
 		Pass::call(design, "proc_clean");
@@ -2204,12 +2363,196 @@ Auf den Stapel wird ein Objekt \textit{syncrule} gelegt. Eine \textit{syncrule} 
 Die Funktion \textit{addChunkActions} ermöglicht das Aufsplitten von Zuweisungen  in Teile \textit{chunks}, um natürlich große Multiplexer zu generieren.
 \\
 \\
-Die \textit{proc\_clean} Funktion iteriert diesen Stapel und prüft anhand der C++ Vector Funktion \textit{size()}, ob Elemente vorhanden sind. Wenn nicht, dann wird das jeweilige Objekt auf syncs[i] gelöscht
+Die \textit{proc\_clean} Funktion iteriert beide Vektoren \textit{syncs} und \textit{actions}. Jedes Objekt auf dem Vektor \textit{syncs} hat einen Vektor \textit{actions} mit Zuweisungen für jede Synchronisation. Daher werden mit einer verschachtelten for-schleife die \textit{action}-Vektoren der \textit{RTLIL:SyncRule} Objekte iteriert und, falls leere Zuweisung, das aktuelle Objekt (an Stelle actions.begin()+j) gelöscht.
+Zusätzlich wird für jedes \textit{RTLIL::SyncRule} Objekt geprüft, ob der zugehörige \textit{actions}-Vektor komplett leer ist (size()==0). Dann ist die Synchronisierung überflüssig und wird entfernt.
+\\
+\\
+%proc rm
+Der \textit{proc\_rmdead} Pass:
+Dieser Pass löscht unerreichbare Äste aus Entscheidungsbäumen.
+Hier müssen also if- und case-Anweisungen untersucht werden.
+\begin{lstlisting}[language=C++]
+void proc_rmdead(RTLIL::SwitchRule *sw, int &counter, int &full_case_counter)
+{
+	BitPatternPool pool(sw->signal);
+
+	for (size_t i = 0; i < sw->cases.size(); i++)
+	{
+		bool is_default = GetSize(sw->cases[i]->compare) == 0 && (!pool.empty() || GetSize(sw->signal) == 0);
+
+		for (size_t j = 0; j < sw->cases[i]->compare.size(); j++) {
+			RTLIL::SigSpec sig = sw->cases[i]->compare[j];
+			if (!sig.is_fully_const())
+				continue;
+			if (!pool.take(sig))
+				sw->cases[i]->compare.erase(sw->cases[i]->compare.begin() + (j--));
+		}
+
+		if (!is_default) {
+			if (sw->cases[i]->compare.size() == 0) {
+				delete sw->cases[i];
+				sw->cases.erase(sw->cases.begin() + (i--));
+				counter++;
+				continue;
+			}
+			// if (pool.empty())
+			// 	sw->cases[i]->compare.clear();
+		}
+
+		for (auto switch_it : sw->cases[i]->switches)
+			proc_rmdead(switch_it, counter, full_case_counter);
+
+		if (is_default)
+			pool.take_all();
+	}
+
+	if (pool.empty() && !sw->get_bool_attribute("\\full_case")) {
+		sw->set_bool_attribute("\\full_case");
+		full_case_counter++;
+	}
+}
+\end{lstlisting}
+Der Vektor \textit{cases} jedes \textit{RTLIL::SwitchRule} Objekts wird iteriert.
+%TODO hier auch wieder compare
+%isdefault
+\textit{bool is\_default} ist \textit{true}, wenn der Vektor \textit{compare} leer ist, der \textit{BitPatternPool} mit den Signalen des \textit{SwitchRule} Objekts nicht leer ist, oder der Vektor mit Signalen leer ist
+%pool?
+%return true wenn empty, sonst false. Normalerweise also immer true oder false bei vollem Vektor, sonst vertauscht?
+%TODO macht oder sinn?
+%size_t für Indexierung
+\textit{size\_t} ist ein \textit{unsigned} Datentyp, der nie kleiner als 0 werden kann. Daher wird er für die Indexierung von Arrays genutzt. Hier wird über den Vektor \textit{compare} iteriert.\\
+%mögliche Erklärung für compare
+In \textit{compare} werden Signale gespeichert, die mit dem Signal in der \textit{RTLIL::SwitchRule} verglichen werden sollen.
+\\
+\\
+Auffällig ist, dass das Löschen hier genau so funktioniert wie vorher. 
+Wenn in dem Vektor \textit{compare} an der auf der Stelle liegendem Signal ein Wert liegt (Funktion \textit{is\_fully\_const() gibt \textit{false} zurück, negiert zu \textit{true}}, wird das Objekt übersprungen.\\
+Ausschnitt der Funktion:
+%Funktion is_fully_const
+\begin{lstlisting}[language=C++]
+bool RTLIL::SigSpec::is_fully_const() const
+{
+	cover("kernel.rtlil.sigspec.is_fully_const");
+
+	pack();
+	for (auto it = chunks_.begin(); it != chunks_.end(); it++)
+		if (it->width > 0 && it->wire != NULL)
+			return false;
+	return true;
+}
+\end{lstlisting}
+Ansonsten wird, wenn \textit{take() true} zurückgibt, das entsprechende Objekt aus dem \textit{compare} Vektor gelöscht.
+%TODO löschen von gesamten case untersuchen.
+\\
+Bei dem Fall, dass der Vektor \textit{compare} komplett leer ist (\textit{compare.size() == 0}), kann das ganze \textit{RTLIL::CaseRule} Objekt gelöscht werden. Hier muss jedoch vorher überprüft werden, ob der Fall nicht der \textit{default}-Case ist;\\
+Ein Verilog \textit{case}-Statement hat folgende Struktur:
+\begin{lstlisting}[language=Verilog]
+case (<expression>)
+	case_item1 : 	<single statement>
+	case_item2,
+	case_item3 : 	<single statement>
+	case_item4 : 	begin
+	          			<multiple statements>
+	        			end
+	default 	 : <statement>
+endcase
+\end{lstlisting}
+Hier ist sichtbar, dass der default-Fall kein \textit{case\_item} (in Yosys vgl. RTLIL::CaseRule) für den Vergleich hat, sondern ein Ausweichen bei nicht-Zutreffen der anderen Fälle ermöglicht. Ein leerer \textit{compare}-Vektor bedeutet bei dem \textit{default}-Case also nicht, dass der Ast ungenutzt ist, sondern ist eine Folgerung aus dem Verilog-Syntax.
+\\
+\\ 
+%Zusammenfassung
+\textbf{Zusammenfassung: Wenn ein Signal zum Vergleich für eine Case-Bedingung mit seinem Switch leer ist, kann es aus der entsprechendem Vektor für die Vergleiche \textit{compare} gelöscht werden.\\
+Ist der gesamte Vektor mit Vergleichssignalen leer, so ist der Fall nicht mehr erreichbar, da er nicht mehr eintreten kann. Dann wird er gelöscht, wenn es sich nicht um den Verilog \textit{default}-Case handelt.}
 \item \textit{proc\_arst\\
-This pass detects processes that describe d-type flip-flops with asynchronous resets and rewrites the process to better reflect what they are modelling: Before this pass, an asynchronous reset has two edge-sensitive sync rules and one top-level RTLIL::SwitchRule for the reset path. After this pass the sync rule for the reset is level-sensitive and the top-level RTLIL::SwitchRule has been removed.}
+This pass detects processes that describe d-type flip-flops with asynchronous resets and rewrites the process to better reflect what they are modelling: Before this pass, an asynchronous reset has two edge-sensitive sync rules and one top-level RTLIL::SwitchRule for the reset path. After this pass the sync rule for the reset is level-sensitive and the top-level RTLIL::SwitchRule has been removed.}\\
+\\
+%TODO Wie werden Synchronisationsereignisse beim Funktionsgenerator festgelegt? vgl. Parserreaktion, Verilogcode
+%DFlipflop mit asynchronem Reset
+Der Prozess-Generator in \textit{genRTLIL.cc} generiert Zuweisungsereignisse für fallende und steigende Flanken.
+Bei einem asynchronen Reset wird bei aktivem Reset das Ausgangssignal \textit{Q} auf 0 zugewiesen.   
+%TODO Reset Zuweisung, warum zwei Flanken? Welchen Sinn macht Levelsensitivität?
+\begin{lstlisting}[language=C++]
+void proc_arst(RTLIL::Module *mod, RTLIL::Process *proc, SigMap &assign_map)
+{
+restart_proc_arst:
+	if (proc->root_case.switches.size() != 1)
+		return;
+
+	RTLIL::SigSpec root_sig = proc->root_case.switches[0]->signal;
+
+	for (auto &sync : proc->syncs) {
+		if (sync->type == RTLIL::SyncType::STp || sync->type == RTLIL::SyncType::STn) {
+			bool polarity = sync->type == RTLIL::SyncType::STp;
+			if (check_signal(mod, root_sig, sync->signal, polarity)) {
+				if (proc->syncs.size() == 1) {
+					log("Found VHDL-style edge-trigger %s in `%s.%s'.\n", log_signal(sync->signal), mod->name.c_str(), proc->name.c_str());
+				} else {
+					log("Found async reset %s in `%s.%s'.\n", log_signal(sync->signal), mod->name.c_str(), proc->name.c_str());
+					sync->type = sync->type == RTLIL::SyncType::STp ? RTLIL::SyncType::ST1 : RTLIL::SyncType::ST0;
+				}
+				for (auto &action : sync->actions) {
+					RTLIL::SigSpec rspec = action.second;
+					RTLIL::SigSpec rval = RTLIL::SigSpec(RTLIL::State::Sm, rspec.size());
+					for (int i = 0; i < GetSize(rspec); i++)
+						if (rspec[i].wire == NULL)
+							rval[i] = rspec[i];
+					RTLIL::SigSpec last_rval;
+					for (int count = 0; rval != last_rval; count++) {
+						last_rval = rval;
+						apply_const(mod, rspec, rval, &proc->root_case, root_sig, polarity, false);
+						assign_map.apply(rval);
+						if (rval.is_fully_const())
+							break;
+						if (count > 100)
+							log_error("Async reset %s yields endless loop at value %s for signal %s.\n",
+									log_signal(sync->signal), log_signal(rval), log_signal(action.first));
+						rspec = rval;
+					}
+					if (rval.has_marked_bits())
+						log_error("Async reset %s yields non-constant value %s for signal %s.\n",
+								log_signal(sync->signal), log_signal(rval), log_signal(action.first));
+					action.second = rval;
+				}
+				eliminate_const(mod, &proc->root_case, root_sig, polarity);
+				goto restart_proc_arst;
+			}
+		}
+	}
+}
+\end{lstlisting}
+Die Funktion wird so aufgerufen:
+\begin{lstlisting}[language=C++]
+for (auto mod : design->modules())
+			if (design->selected(mod)) {
+				SigMap assign_map(mod);
+				for (auto &proc_it : mod->processes) {
+					if (!design->selected(mod, proc_it.second))
+						continue;
+					proc_arst(mod, proc_it.second, assign_map);
+\end{lstlisting}
+Es wird durch alle Module des Designs iteriert. Für jedes Modul wird eine \textit{SigMap assign\_map()} erstellt.
+%TODO SigMap analysieren, für eindeutige Signale gebraucht?
+Zu SigMap im Manual:
+\begin{lstlisting}[language=C++]
+/*
+When a design has many wires in it that are connected to each other, then a
+single signal bit can have multiple valid names. The SigMap object can be used
+to map SigSpecs or SigBits to unique SigSpecs and SigBits that consistently
+only use one wire from such a group of connected wires. For example:
+*/
+SigBit a = module->addWire(NEW_ID);
+SigBit b = module->addWire(NEW_ID);
+module->connect(a, b);
+log("%d\n", a == b); // will print 0 155
+SigMap sigmap(module);
+log("%d\n", sigmap(a) == sigmap(b)); // will print 1
+\end{lstlisting}
 \item \textit{proc\_mux\\
 This pass converts the RTLIL::CaseRule/RTLIL::SwitchRule-tree to a tree of multiplexers per written signal. After this, the RTLIL::Process structure only contains the RTLIL::SyncRules that describe the output registers.
 }
+Anschließend wird durch die Prozesse der Module iteriert.
+%TODO selected analysieren
+
 \begin{lstlisting}[language=C++]
 void proc_mux(RTLIL::Module *mod, RTLIL::Process *proc, bool ifxmode)
 {
