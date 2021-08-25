@@ -1,0 +1,64 @@
+Verilog -> Blif with Yosys EXAMPLE
+
+Download compiled Yosys version or compile yourself.
+Download git directory of ABC, copy content into Yosys top folder.
+
+Start yosys command window (yosys.exe).
+
+Execute following commands (edit paths, topmodule)
+
+read -sv "pathtoverilogfile"/test.v
+hierarchy -top "nameoftopmodule"
+proc; opt; techmap; opt
+write_blif synth.blif
+show -format ps -viewer gv
+
+
+Using a modified cell library for ASIC mapping
+
+
+# read design
+read_verilog mydesign.v
+
+# elaborate design hierarchy
+hierarchy -check -top mytop
+
+# the high-level stuff
+proc; opt; fsm; opt; memory; opt
+
+# mapping to internal cell library
+techmap; opt
+
+# mapping flip-flops to mycells.lib
+dfflibmap -liberty mycells.lib
+
+# mapping logic to mycells.lib
+abc -liberty mycells.lib
+
+# cleanup
+clean
+
+# write synthesized design
+write_verilog synth.v
+
+
+ERRORS:
+Warning: Found unsupported expression 'CE*IQ+CE*D' in pin attribute of cell 'CC_DFFRE' - skipping.
+Warning: Malformed liberty file - cannot find pin 'CE'IQ+CED' in cell 'CC__DFFSE' - skipping.
+Warning: Found unsupported expression 'CE*IQ+CE*D' in pin attribute of cell 'CC_DFFRE' - skipping.
+Warning: Malformed liberty file - cannot find pin 'CE'IQ+CED' in cell 'CC__DFFSE' - skipping.
+Warning: Found unsupported expression 'CE*IQ+CE*D' in pin attribute of cell 'CC_DFFRE' - skipping.
+Warning: Malformed liberty file - cannot find pin 'CE'IQ+CED' in cell 'CC__DFFSE' - skipping.
+Warning: Found unsupported expression 'CE*IQ+CE*D' in pin attribute of cell 'CC_DFFRE' - skipping.
+Warning: Malformed liberty file - cannot find pin 'CE'IQ+CED' in cell 'CC__DFFSE' - skipping.
+Warning: Found unsupported expression 'CE*IQ+CE*D' in pin attribute of cell 'CC_DFFRE' - skipping.
+Warning: Malformed liberty file - cannot find pin 'CE'IQ+CED' in cell 'CC__DFFSE' - skipping.
+Warning: Found unsupported expression 'CE*IQ+CE*D' in pin attribute of cell 'CC_DFFRE' - skipping.
+Warning: Malformed liberty file - cannot find pin 'CE'IQ+CED' in cell 'CC__DFFSE' - skipping.
+  cell CC_DFF (noninv, pins=5, area=0.50) is a direct match for cell type $_DFFSR_PNN_.
+Warning: Found unsupported expression 'CE*IQ+CE*D' in pin attribute of cell 'CC_DFFRE' - skipping.
+Warning: Malformed liberty file - cannot find pin 'CE'IQ+CED' in cell 'CC__DFFSE' - skipping.
+Warning: Found unsupported expression 'CE*IQ+CE*D' in pin attribute of cell 'CC_DFFRE' - skipping.
+Warning: Malformed liberty file - cannot find pin 'CE'IQ+CED' in cell 'CC__DFFSE' - skipping.
+Warning: Found unsupported expression 'CE*IQ+CE*D' in pin attribute of cell 'CC_DFFRE' - skipping.
+Warning: Malformed liberty file - cannot find pin 'CE'IQ+CED' in cell 'CC__DFFSE' - skipping.
