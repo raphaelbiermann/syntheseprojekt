@@ -29,18 +29,24 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3.1}Analyse der simplify Funktion}{30}{section.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.2}Analyse der genRTLIL Funktion}{31}{section.3.2}%
+\contentsline {section}{\numberline {3.2}Analyse des RTLIL Generators}{31}{section.3.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.3}Prozessgenerator}{32}{section.3.3}%
+\contentsline {subsection}{\numberline {3.2.1}Die genRTLIL() Funktion}{31}{subsection.3.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.1}Datenstrukturen und Variablen}{34}{subsection.3.3.1}%
+\contentsline {section}{\numberline {3.3}Operationen}{32}{section.3.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.2}Non-Blocking Assignments}{38}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.1}Außerhalb von Prozessen}{32}{subsection.3.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.3}Blocking-Assignments}{41}{subsection.3.3.3}%
+\contentsline {section}{\numberline {3.4}Prozessgenerator}{34}{section.3.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.4}Cases und if-Anweisungen}{42}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Datenstrukturen und Variablen}{36}{subsection.3.4.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.5}Proc Pass}{44}{subsection.3.3.5}%
+\contentsline {subsection}{\numberline {3.4.2}Non-Blocking Assignments}{40}{subsection.3.4.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.4}Liberty-Files}{56}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.3}Blocking-Assignments}{44}{subsection.3.4.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.4.4}Cases und if-Anweisungen}{44}{subsection.3.4.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.4.5}Proc Pass}{47}{subsection.3.4.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.5}Liberty-Files}{59}{section.3.5}%

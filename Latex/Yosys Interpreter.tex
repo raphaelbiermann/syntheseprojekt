@@ -1485,9 +1485,9 @@ Die Breite oder hier \textit{Width} eines Signals ist Teil der Range.
 
 
 
-\section{Analyse der genRTLIL Funktion}
-
-genRTLIL ist Teil der Strukturdefinition für Syntaxbaum-Knoten AstNode. 
+\section{Analyse des RTLIL Generators}
+\subsection{Die genRTLIL() Funktion}
+genRTLIL() ist Teil der Strukturdefinition für Syntaxbaum-Knoten AstNode. 
 \\
 \\
 Die genRTLIL Funktion besteht zu einem Teil aus einer großen Case-Bedingung.
@@ -1517,6 +1517,142 @@ Die genRTLIL Funktion besteht zu einem Teil aus einer großen Case-Bedingung.
 \end{lstlisting}
 
 Diese Blöcke werden ignoriert, da sie Überbleibsel der simplify-Funktion sind oder mit anderen Knoten behandelt werden. Hier ist auffällig, dass unteranderem die Generate-Blöcke enthalten sind, die in der simplify-Funktion ausgerollt werden.
+\section{Operationen}
+\subsection{Außerhalb von Prozessen}
+Bei diesen Operationen wird zwischen \textit{Unary-Ops} und \textit{Binary-Ops} unterschieden:
+\\
+\\
+%TODO Unary-ops mit uniop2rtlil
+\textit{Unary-Ops}, sind Operationen mit lediglich einem Operanden, einem Eingang und einem Ausgang. 
+Sie sind beispielsweise für folgende Operationen relevant:
+\begin{lstlisting}[language=C++]
+	// generate cells for unary operations: $reduce_and, $reduce_or, $reduce_xor, $reduce_xnor
+	if (0) { case AST_REDUCE_AND:  type_name = "$reduce_and"; }
+	if (0) { case AST_REDUCE_OR:   type_name = "$reduce_or"; }
+	if (0) { case AST_REDUCE_XOR:  type_name = "$reduce_xor"; }
+	if (0) { case AST_REDUCE_XNOR: type_name = "$reduce_xnor"; }
+		{
+			RTLIL::SigSpec arg = children[0]->genRTLIL();
+			RTLIL::SigSpec sig = uniop2rtlil(this, type_name, max(width_hint, 1), arg);
+			return sig;
+		}
+
+	// generate cells for unary operations: $reduce_bool
+	// (this is actually just an $reduce_or, but for clarity a different cell type is used)
+	if (0) { case AST_REDUCE_BOOL:  type_name = "$reduce_bool"; }
+		{
+			RTLIL::SigSpec arg = children[0]->genRTLIL();
+			RTLIL::SigSpec sig = arg.size() > 1 ? uniop2rtlil(this, type_name, max(width_hint, 1), arg) : arg;
+			return sig;
+		}
+\end{lstlisting}
+Sie werden mit einer Helferfunktion umgesetzt. 
+\begin{lstlisting}[language=C++]
+static RTLIL::SigSpec uniop2rtlil(AstNode *that, std::string type, int result_width, const RTLIL::SigSpec &arg, bool gen_attributes = true)
+{
+	std::stringstream sstr;
+	sstr << type << "$" << that->filename << ":" << that->linenum << "$" << (autoidx++);
+
+	RTLIL::Cell *cell = current_module->addCell(sstr.str(), type);
+	cell->attributes["\\src"] = stringf("%s:%d", that->filename.c_str(), that->linenum);
+
+	RTLIL::Wire *wire = current_module->addWire(cell->name.str() + "_Y", result_width);
+	wire->attributes["\\src"] = stringf("%s:%d", that->filename.c_str(), that->linenum);
+
+	if (gen_attributes)
+		for (auto &attr : that->attributes) {
+			if (attr.second->type != AST_CONSTANT)
+				log_file_error(that->filename, that->linenum, "Attribute `%s' with non-constant value!\n", attr.first.c_str());
+			cell->attributes[attr.first] = attr.second->asAttrConst();
+		}
+
+	cell->parameters["\\A_SIGNED"] = RTLIL::Const(that->children[0]->is_signed);
+	cell->parameters["\\A_WIDTH"] = RTLIL::Const(arg.size());
+	cell->setPort("\\A", arg);
+
+	cell->parameters["\\Y_WIDTH"] = result_width;
+	cell->setPort("\\Y", wire);
+	return wire;
+}	
+\end{lstlisting}
+%stringstream?
+Dem Modul wird eine neue Zelle hinzugefügt. Der Zelltyp wird in den Parametern der Funktion übergeben. \\
+Zusätzlich dazu wird ein Wire hinzugefügt. Das Wire liegt vermutlich an dem Ausgang des Gatters. Die Beschriftung mit \textit{\_Y} lässt darauf schließen.\\
+Da es sich um eine Operation mit nur einem Operanden handelt, gibt es auch nur einen Modulausgang. Die Wortbreite wird \textit{addWire()} in den Parametern mit \textit{result\_width} übergeben.
+%TODO Attribute
+\\
+\\
+Die Zellparameter und Zuweisungen folgen zuletzt.\\
+\textit{A\_SIGNED} hängt davon ab, ob das children Objekt der AST-Node konstant ist. \\
+\\
+Die children Objekte entstehen bei dem Aufbau des AST-Baums durch den Parser.
+\\
+Die Ast-Nodes für Unary-Ops werden vom Parser erstellt:
+\begin{lstlisting}[language=C++]
+'&' attr basic_expr %prec UNARY_OPS {
+		$$ = new AstNode(AST_REDUCE_AND, $3);
+		append_attr($$, $2);
+	} |
+	OP_NAND attr basic_expr %prec UNARY_OPS {
+		$$ = new AstNode(AST_REDUCE_AND, $3);
+		append_attr($$, $2);
+		$$ = new AstNode(AST_LOGIC_NOT, $$);
+	} |
+	'|' attr basic_expr %prec UNARY_OPS {
+		$$ = new AstNode(AST_REDUCE_OR, $3);
+		append_attr($$, $2);
+	} |
+	OP_NOR attr basic_expr %prec UNARY_OPS {
+		$$ = new AstNode(AST_REDUCE_OR, $3);
+		append_attr($$, $2);
+		$$ = new AstNode(AST_LOGIC_NOT, $$);
+	} |
+	'^' attr basic_expr %prec UNARY_OPS {
+		$$ = new AstNode(AST_REDUCE_XOR, $3);
+		append_attr($$, $2);
+	} |
+	OP_XNOR attr basic_expr %prec UNARY_OPS {
+		$$ = new AstNode(AST_REDUCE_XNOR, $3);
+		append_attr($$, $2);
+	} |
+\end{lstlisting}
+Zur Erinnerung der Konstruktor einer AstNode:
+\begin{lstlisting}[language=C++]
+AstNode::AstNode(AstNodeType type, AstNode *child1, AstNode *child2, AstNode *child3)
+{
+\end{lstlisting}
+An der Stelle \textit{child1} wird also \$3 des Grammatikausdrucks übergeben, was hier \textit{basic\_expr} ist.\\
+
+Auf \textit{basic\_expr} können im Grunde genommen alle logischen Ausdrücke abgeleitet werden.\\
+Auch \textit{rvalue} wird auf \textit{basic\_expr} abgeleitet.
+Es werden also AstNodes für die logischen Operationen, die auf das Signal in \textit{basic\_expr} angewendet werden, erstellt und in das children Objekt wird der Wert von \textit{basic\_expr} gespeichert.
+%TODO welchen Datentyp hat basic_expr? SigSpec?
+
+
+%An der Stele vielleicht nicht so relevant
+\begin{comment}
+\textit{basic\_expr} kann zu dem allgemeiner genutzten \textit{expr} abgeleitet werden:
+\begin{lstlisting}[language=C++]
+expr:
+	basic_expr {
+		$$ = $1;
+	}
+\end{lstlisting}
+Auch nochmal kurz zur Erinnerung die Behandlung von Assignments im Parser:
+\begin{lstlisting}[language=C++]
+assign_stmt:
+	TOK_ASSIGN delay assign_expr_list ';';
+
+assign_expr_list:
+	assign_expr | assign_expr_list ',' assign_expr;
+
+assign_expr:
+	lvalue '=' expr {
+		ast_stack.back()->children.push_back(new AstNode(AST_ASSIGN, $1, $3));
+	};
+\end{lstlisting}
+\end{comment}
+
 
 \section{Prozessgenerator}
 %TODO Wann relevant, woraus besteht er
@@ -1932,27 +2068,42 @@ RTLIL::SigSpec rvalue =
 ast->children[1]->genWidthRTLIL(lvalue.size(), 
 &subst_rvalue_map.stdmap());
 \end{lstlisting}   
+%TODO Parameter size für Auffüllen?
 %TODO genWidthRTLIL schreibt in Adresse?
 Da eine Zuweisung nur möglich ist, wenn der Ausdruck auf der rechten Seite die gleiche Wortbreite wie der Ausdruck auf der linken Seite hat, wird hier ein Wrapper der RTLIL Funktion verwendet, der mit einem Parameter für die Breite (Width) Rücksicht darauf nimmt. Als Parameter wird lvalue.size(), also die Breite der linken Seite übergeben.\\
 \\
-subst\_rvalue\_map ist eine stackmap:
+Die Funktion \textit{genWidthRTLIL()}:
+\begin{lstlisting}[language=C++]
+RTLIL::SigSpec AstNode::genWidthRTLIL(int width, const dict<RTLIL::SigBit, RTLIL::SigBit> *new_subst_ptr)
+{
+	const dict<RTLIL::SigBit, RTLIL::SigBit> *backup_subst_ptr = genRTLIL_subst_ptr;
+
+	if (new_subst_ptr)
+		genRTLIL_subst_ptr = new_subst_ptr;
+
+	bool sign_hint = true;
+	int width_hint = width;
+	detectSignWidthWorker(width_hint, sign_hint);
+	RTLIL::SigSpec sig = genRTLIL(width_hint, sign_hint);
+
+	genRTLIL_subst_ptr = backup_subst_ptr;
+
+	if (width >= 0)
+		sig.extend_u0(width, is_signed);
+
+	return sig;
+}
+\end{lstlisting}
+Dem Pointer \textit{*new\_subst\_ptr} wird bei Ausführung der Methode die Adresse der Rückgabe von \textit{\&subst\_rvalue\_map.stdmap()} übergeben. Die Methode stdmap() gibt ein Objekt des Typs stackmap zurück:
 \begin{lstlisting}[language=C++]
 stackmap<RTLIL::SigBit, RTLIL::SigBit> subst_rvalue_map;
 \end{lstlisting}
 
-Stackmap ist ein eigener Datentyp, der wie eine map funktioniert wobei zusätzlich der aktuelle Zustand gespeichert und wiederhergestellt werden kann.
-\begin{lstlisting}[language=C++]
-				pool<SigBit> lvalue_sigbits; //leer? count führt do_hash() und do_lookup() aus
-				for (int i = 0; i < GetSize(lvalue); i++) {
-					if (lvalue_sigbits.count(lvalue[i]) > 0) { //? bei nicht-vorkommen einfügen, sonst entfernen
-						unmapped_lvalue.remove(i);
-						lvalue.remove(i); //welche Einträge stehen drin?
-						rvalue.remove(i--);
-					} else
-						lvalue_sigbits.insert(lvalue[i]); //nicht einfügen, weil vorhanden
-				}//wo wird lvalue_sigbits weiterverwendet?
+Stackmap ist ein eigener Datentyp, der wie eine map funktioniert wobei zusätzlich der aktuelle Zustand gespeichert und wiederhergestellt werden kann.\\
+Die Adresse dieser Stackmap wird dem Pointer übergeben.
+genRTLIL\_subst\_ptr bekommt dann einen Pointer auf diese Adresse.
 
-\end{lstlisting}
+%TODO nicht die unverständliche Funktion vor dem Löschen vergessen
 %TODO Analyse übersprungen  
   \item \textit{Remove all assignments to the same left-hand-side as this assignment from the current\_case and all
 cases within it.}
@@ -2163,9 +2314,8 @@ Am Ende der for-Schleife werden werden die Bitvektorwerte bits\_[i] von other au
 \end{comment}
 \end{enumerate}
 
-
+%TODO Blocking Assignments
 \subsection{Blocking-Assignments}
-
 
 \textit{When an AST\_ASSIGN\_EQ node is discovered, the following actions are performed by the ProcessGenerator:}
 \begin{enumerate}
@@ -2491,12 +2641,13 @@ Hier ist sichtbar, dass der default-Fall kein \textit{case\_item} (in Yosys vgl.
 %Zusammenfassung
 \textbf{Zusammenfassung: Wenn ein Signal zum Vergleich für eine Case-Bedingung mit seinem Switch leer ist, kann es aus der entsprechendem Vektor für die Vergleiche \textit{compare} gelöscht werden.\\
 Ist der gesamte Vektor mit Vergleichssignalen leer, so ist der Fall nicht mehr erreichbar, da er nicht mehr eintreten kann. Dann wird er gelöscht, wenn es sich nicht um den Verilog \textit{default}-Case handelt.}
+%proc_arst
 \item \textit{proc\_arst\\
 This pass detects processes that describe d-type flip-flops with asynchronous resets and rewrites the process to better reflect what they are modelling: Before this pass, an asynchronous reset has two edge-sensitive sync rules and one top-level RTLIL::SwitchRule for the reset path. After this pass the sync rule for the reset is level-sensitive and the top-level RTLIL::SwitchRule has been removed.}\\
 \\
 %TODO Wie werden Synchronisationsereignisse beim Funktionsgenerator festgelegt? vgl. Parserreaktion, Verilogcode
 %DFlipflop mit asynchronem Reset
-Der Prozess-Generator in \textit{genRTLIL.cc} generiert Zuweisungsereignisse für fallende und steigende Flanken.
+Der Prozess-Generator in \textit{genRTLIL.cc} generiert Zuweisungsereignisse für fallende und steigende Flanken, die in einem Vektor \textit{syncs} als \textit{SyncRule} Objekte gespeichert werden.
 Bei einem asynchronen Reset wird bei aktivem Reset das Ausgangssignal \textit{Q} auf 0 zugewiesen.   
 %TODO Reset Zuweisung, warum zwei Flanken? Welchen Sinn macht Levelsensitivität?
 \begin{lstlisting}[language=C++]
@@ -2613,7 +2764,23 @@ void proc_mux(RTLIL::Module *mod, RTLIL::Process *proc, bool ifxmode)
 	}
 }
 \end{lstlisting}
-Die Hauptfunktion proc\_mux 
+Die Hauptfunktion proc\_mux.
+\\
+\\
+Ein Objekt \textit{sigsnip} des Datentyps \textit{SigSnippets} wird erstellt. Die \textit{insert} Funktion von \textit{SigSnippets} wird auf das CaseRule Objekt des root\_case, also der obersten Ebene im Prozess angewendet:
+\begin{lstlisting}[language=C++]
+void insert(const RTLIL::CaseRule *cs)
+	{
+		for (auto &action : cs->actions)
+			insert(action.first);
+
+		for (auto sw : cs->switches)
+		for (auto cs2 : sw->cases)
+			insert(cs2);
+	}
+\end{lstlisting}
+Aus dem Zuweisungsvektor \textit{actions} werden die lvalue Objekte eingefügt.
+Zusätzlich wird die Funktion rekursiv auf die weiteren CaseRule Objekte aufgerufen, wo wiederum wieder die Zuweisungsvektoren durchiteriert werden und die lvalue Objekte eingefügt werden. Die Speicherung ist
 
 
 \item \textit{proc\_dff\\
@@ -2758,6 +2925,11 @@ SigSpec sig_q = sig;
 			sync_level = NULL;
 		}
 \end{lstlisting}
+%rstval == sig
+%TODO CODEÄNDERUNG, hier 0.9
+Falls das Resetreferenz-Signal \textit{rstval} gleich dem Eingangssignal ist, wird die Resetreferenz hochohmig.
+Die Referenz ist an dieser Stelle nicht mehr konstant.
+
 Der D-Flipflop Typ wird über die Synchronisierungsart und Reset-Level und Wert bestimmt (siehe Tabelle)
 %TODO RstLvl vs RstVal
 
@@ -2781,26 +2953,7 @@ Wenn nicht auf Flanken und eine globale Clock synchronisiert wird, gibt es gener
 		if (!sync_edge && !global_clock)
 			log_error("Missing edge-sensitive event for this signal!\n");
 \end{lstlisting}
-Wenn es mehrere asynchrone Synchronisationsregeln gibt (mehrfache Levelsensitivität für ein Signal..), wird ein D-Flipflop mit komplexen asynchronen Reset erstellt. Dafür gibt es die Funktion \textit{gen\_dffsr\_complex()}.
-\begin{lstlisting}[language=C++]
-		if (many_async_rules.size() > 0)
-		{
-			log_warning("Complex async reset for dff `%s'.\n", log_signal(sig));
-			gen_dffsr_complex(mod, insig, sig, sync_edge->signal, sync_edge->type == RTLIL::SyncType::STp, many_async_rules, proc);
-		}
-\end{lstlisting}
-%TODO gen_dffsr_coomplex und gen_dffsr analysieren, unterschiede Zeigen.
-
-\begin{lstlisting}[language=C++]
-else if (!rstval.is_fully_const() && !ce.eval(rstval))
-		{
-			log_warning("Async reset value `%s' is not constant!\n", log_signal(rstval));
-			gen_dffsr(mod, insig, rstval, sig_q,
-					sync_edge->type == RTLIL::SyncType::STp,
-					sync_level && sync_level->type == RTLIL::SyncType::ST1,
-					sync_edge->signal, sync_level->signal, proc);
-		}
-\end{lstlisting}
+Um die folgenden Fälle zu analysieren, wird zuerst die D-Flipflop Auswahl erklärt.\\
 Aus dem Manual:
 %Tabelle mit Flipflop Typen aus Manual
 %h für Gleitumgebung
@@ -2952,6 +3105,49 @@ NP1 bedeutet, dass bei einer negativen Taktflanke bei positiver Resetflanke der 
 %TODO Behauptung prüfen.
 %TODO Zusammenhang mit Pass herstellen
 Die Flipflop-Generator Funktionen haben Parameter, die die Typisierung mit den Flipflops aus der Cell-Library ermöglicht.
+\\
+\\
+
+%TODO Parameter der genDFF Funktion mit Behauptung vergleichen (Tabelle)
+Zurück zu proc\_dff:\\
+Wenn es mehrere asynchrone Synchronisationsregeln gibt (mehrfache Levelsensitivität für ein Signal..), wird ein D-Flipflop mit komplexen asynchronen Reset erstellt. Dafür gibt es diesen Fall mit der Funktion \textit{gen\_dffsr\_complex()}:
+\begin{lstlisting}[language=C++]
+		if (many_async_rules.size() > 0)
+		{
+			log_warning("Complex async reset for dff `%s'.\n", log_signal(sig));
+			gen_dffsr_complex(mod, insig, sig, sync_edge->signal, sync_edge->type == RTLIL::SyncType::STp, many_async_rules, proc);
+		}
+\end{lstlisting}
+Synchronisation mit positiver Flanke des Clock-Signals \textit{sync\_edge signal}.
+
+
+%TODO gen_dffsr_coomplex und gen_dffsr analysieren, unterschiede Zeigen.
+
+\begin{lstlisting}[language=C++]
+else if (!rstval.is_fully_const() && !ce.eval(rstval))
+		{
+			log_warning("Async reset value `%s' is not constant!\n", log_signal(rstval));
+			gen_dffsr(mod, insig, rstval, sig_q,
+					sync_edge->type == RTLIL::SyncType::STp,
+					sync_level && sync_level->type == RTLIL::SyncType::ST1,
+					sync_edge->signal, sync_level->signal, proc);
+		}
+\end{lstlisting}
+Synchronisation mit \textit{High}-Level. \textit{rstval} ist nicht konstant. Das heißt, dass sich der Rücksetzwert aktiv ändert. Dieses Toggle-Verhalten kann mit einem RS-Flipflop umgesetzt werden. Deswegen wird hier der \textbf{RS-Flipflop}-Generator \textit{gen\_dffsr()} anstatt des normalen Generators für ein konstantes Reset \textit{gen\_dff()} verwendet.
+\\
+\\
+Der Fall, dass es keine asynchronen Regeln gibt und \textit{rstval} konstant ist (oben diskutiert):
+\begin{lstlisting}[language=C++]
+else
+			gen_dff(mod, insig, rstval.as_const(), sig_q,
+					sync_edge && sync_edge->type == RTLIL::SyncType::STp,
+					sync_level && sync_level->type == RTLIL::SyncType::ST1,
+					sync_edge ? sync_edge->signal : SigSpec(),
+					sync_level ? &sync_level->signal : NULL, proc);
+
+\end{lstlisting}
+Positive Flanke und \textit{High-}Level sensitiv. Hier, wie erwähnt, der Generator für ein konstantes Reset.
+
 %D-Flipflop Generator
 \begin{lstlisting}[language=C++]
 }
@@ -2990,7 +3186,10 @@ void gen_dff(RTLIL::Module *mod, RTLIL::SigSpec sig_in, RTLIL::Const val_rst, RT
 	log(".\n");
 }
 \end{lstlisting}
-%TODO Unterscheidung zwischen D-Flipflop und SR-Flipflop. Wann was?
+%Unterscheidung zwischen D-Flipflop und SR-Flipflop. Wann was? rstval! Konstant oder toggle
+Es wird eine neue Zelle \textit{RTLIL::Cell} mit \textit{addCell()} dem Modul hinzugefügt. Die Zelle übernimmt die Attribute des Prozessobjektes. 
+%TODO Was für Attribute?
+
 
 \end{enumerate}
 \section{Liberty-Files}
