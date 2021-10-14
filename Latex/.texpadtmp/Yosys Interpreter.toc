@@ -1,52 +1,58 @@
 \boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
 \babel@toc {ngerman}{}
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {1}Lexer}{3}{chapter.1}%
+\contentsline {chapter}{\numberline {1}Preprozessor}{3}{chapter.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.1}Definiton}{3}{section.1.1}%
+\contentsline {chapter}{\numberline {2}Lexer}{4}{chapter.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.2}Yosys und \textit {Flex}}{3}{section.1.2}%
+\contentsline {section}{\numberline {2.1}Definiton}{4}{section.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.3}Analyse des Lexer-Quellcodes}{4}{section.1.3}%
+\contentsline {section}{\numberline {2.2}Yosys und \textit {Flex}}{4}{section.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.3.1}Lexerregeln}{4}{subsection.1.3.1}%
+\contentsline {section}{\numberline {2.3}Analyse des Lexer-Quellcodes}{5}{section.2.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.3.2}Zusammenfassung der Lexerregeln}{16}{subsection.1.3.2}%
+\contentsline {subsection}{\numberline {2.3.1}Lexerregeln}{5}{subsection.2.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.3.3}Interpretationsprobleme und Ansätze}{17}{subsection.1.3.3}%
+\contentsline {subsection}{\numberline {2.3.2}Zusammenfassung der Lexerregeln}{17}{subsection.2.3.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.3.4}Verbindung zum Parser}{17}{subsection.1.3.4}%
+\contentsline {subsection}{\numberline {2.3.3}Interpretationsprobleme und Ansätze}{18}{subsection.2.3.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {2}Parser}{20}{chapter.2}%
+\contentsline {subsection}{\numberline {2.3.4}Verbindung zum Parser}{18}{subsection.2.3.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2.1}Analyse des Parser-Quellcodes}{20}{section.2.1}%
+\contentsline {chapter}{\numberline {3}Parser}{21}{chapter.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.1.1}Analyse der Parser-Grammatik}{20}{subsection.2.1.1}%
+\contentsline {section}{\numberline {3.1}Analyse des Parser-Quellcodes}{21}{section.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.1.2}Interpretations-Probleme}{28}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {3.1.1}Analyse der Parser-Grammatik}{21}{subsection.3.1.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {3}AST-Frontend}{29}{chapter.3}%
+\contentsline {subsection}{\numberline {3.1.2}Interpretations-Probleme}{29}{subsection.3.1.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.1}Analyse der simplify Funktion}{30}{section.3.1}%
+\contentsline {chapter}{\numberline {4}AST-Frontend}{30}{chapter.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.2}Analyse des RTLIL Generators}{31}{section.3.2}%
+\contentsline {section}{\numberline {4.1}Analyse der simplify Funktion}{31}{section.4.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2.1}Die genRTLIL() Funktion}{31}{subsection.3.2.1}%
+\contentsline {section}{\numberline {4.2}Analyse des RTLIL Generators}{32}{section.4.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.3}Operationen}{32}{section.3.3}%
+\contentsline {subsection}{\numberline {4.2.1}Die genRTLIL() Funktion}{32}{subsection.4.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3.1}Außerhalb von Prozessen}{32}{subsection.3.3.1}%
+\contentsline {section}{\numberline {4.3}Operationen}{33}{section.4.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.4}Prozessgenerator}{34}{section.3.4}%
+\contentsline {subsection}{\numberline {4.3.1}Außerhalb von Prozessen}{33}{subsection.4.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.1}Datenstrukturen und Variablen}{36}{subsection.3.4.1}%
+\contentsline {section}{\numberline {4.4}Prozessgenerator}{36}{section.4.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.2}Non-Blocking Assignments}{40}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {4.4.1}Datenstrukturen und Variablen}{39}{subsection.4.4.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.3}Blocking-Assignments}{44}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {4.4.2}Non-Blocking Assignments}{43}{subsection.4.4.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.4}Cases und if-Anweisungen}{44}{subsection.3.4.4}%
+\contentsline {subsection}{\numberline {4.4.3}Blocking-Assignments}{46}{subsection.4.4.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4.5}Proc Pass}{47}{subsection.3.4.5}%
+\contentsline {subsection}{\numberline {4.4.4}Cases und if-Anweisungen}{47}{subsection.4.4.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3.5}Liberty-Files}{59}{section.3.5}%
+\contentsline {subsection}{\numberline {4.4.5}Proc Pass}{49}{subsection.4.4.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.5}Modulaufbau}{62}{section.4.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.6}Liberty-Files}{69}{section.4.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {5}Notizen}{71}{chapter.5}%

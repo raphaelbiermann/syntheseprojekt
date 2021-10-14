@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.4.22)  27 SEP 2021 11:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.4.22)  1 OCT 2021 13:30
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -604,7 +604,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 {/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/.texpadtmp/Yosys Interpreter.toc
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 6.
+(Font)              <10.95> on input line 8.
 )
 \tf@toc=\write5
 \openout5 = `"Yosys Interpreter.toc"'.
@@ -617,18 +617,17 @@ l.49 \newpage
 
 ] [2]
 Kapitel 1.
+[3
 
-Underfull \hbox (badness 10000) in paragraph at lines 57--63
+]
+Kapitel 2.
+
+Underfull \hbox (badness 10000) in paragraph at lines 59--65
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 65--67
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 79--80
+Underfull \hbox (badness 10000) in paragraph at lines 67--69
 
  []
 
@@ -637,14 +636,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 81--82
 
  []
 
-[3
+
+Underfull \hbox (badness 10000) in paragraph at lines 83--84
+
+ []
+
+[4
 
 ]
-LaTeX Font Info:    Trying to load font information for TS1+cmtt on input line 94.
+LaTeX Font Info:    Trying to load font information for TS1+cmtt on input line 96.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/base/ts1cmtt.fd
 File: ts1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-Underfull \hbox (badness 10000) in paragraph at lines 109--116
+Underfull \hbox (badness 10000) in paragraph at lines 111--118
 
  []
 
@@ -654,435 +658,473 @@ File: lstlang1.sty 2020/03/24 1.8d listings language file
 File: lstlang1.sty 2020/03/24 1.8d listings language file
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
-) [4]
-LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 148.
+) [5]
+LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 150.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 148.
- [5]
-Underfull \hbox (badness 10000) in paragraph at lines 234--240
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 150.
+ [6]
+Underfull \hbox (badness 10000) in paragraph at lines 236--242
 
  []
 
-[6] [7]
-LaTeX Font Info:    Trying to load font information for OML+cmr on input line 342.
+[7] [8]
+LaTeX Font Info:    Trying to load font information for OML+cmr on input line 344.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/base/omlcmr.fd
 File: omlcmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/it' in size <10.95> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 342.
- [8]
-LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 352.
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 344.
  [9]
-Underfull \hbox (badness 10000) in paragraph at lines 426--439
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10.95> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 354.
+ [10]
+Underfull \hbox (badness 10000) in paragraph at lines 428--441
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 426--439
+Underfull \hbox (badness 10000) in paragraph at lines 428--441
 
  []
 
-[10]
-Overfull \hbox (8.24487pt too wide) in paragraph at lines 466--467
+[11]
+Overfull \hbox (8.24487pt too wide) in paragraph at lines 468--469
 \OT1/cmr/m/n/10.95 Diese Re-gel er-kennt ei-ni-ge Aus-dr[]ucke, die mit \TS1/cmr/m/n/10.95 $ \OT1/cmr/m/n/10.95 be-gin-nen. Dies sind haupts[]achlich Testbench-
  []
 
 
-Overfull \hbox (8.7189pt too wide) in paragraph at lines 466--467
+Overfull \hbox (8.7189pt too wide) in paragraph at lines 468--469
 \OT1/cmr/m/n/10.95 Funktionen von Ve-ri-log. Es wird der To-ken TOK[]ID zur[]uckgegeben, der zu-vor zur[]uckgegeben
  []
 
-[11]
-Overfull \hbox (18.8477pt too wide) in paragraph at lines 560--562
+[12]
+Overfull \hbox (18.8477pt too wide) in paragraph at lines 562--564
 \OT1/cmr/m/n/10.95 wer-den be-nut-zer-de-fi-nier-te Aus-dr[]ucke ex-klu-diert und es wird wie zu-vor TOK[]ID zur[]uckgegeben. 
  []
 
-[12]
-Overfull \hbox (2.74512pt too wide) in paragraph at lines 582--585
+[13]
+Overfull \hbox (2.74512pt too wide) in paragraph at lines 584--587
 \OT1/cmr/m/n/10.95 Anschlie^^Yend wird die An-fangs-be-din-gung SYN-O-PSYS[]TRANSLATE[]OFF f[]ur die n[]achsten
  []
 
 
-Overfull \hbox (52.80011pt too wide) in paragraph at lines 591--596
+Overfull \hbox (52.80011pt too wide) in paragraph at lines 593--598
 \OT1/cmr/m/n/10.95 der trans-la-te[]off bo-dy zu en-de ist. Da-mit wird die An-fangs-be-din-gung SYN-O-PSYS[]TRANSLATE[]OFF
  []
 
-[13] [14] [15] [16]
-Underfull \hbox (badness 10000) in paragraph at lines 806--813
+[14] [15] [16] [17]
+Underfull \hbox (badness 10000) in paragraph at lines 808--815
 
  []
 
 
-Overfull \hbox (9.17334pt too wide) in paragraph at lines 806--813
+Overfull \hbox (9.17334pt too wide) in paragraph at lines 808--815
 \OT1/cmr/m/n/10.95 Urspr[]unglich wird dem Bi-son Par-ser ei-ne Lis-te al-ler To-kens in sei-ner Gram-ma-tik-da-tei .y []ubergeben. 
  []
 
-<./images//verilogtortlil.png, id=716, 522.753pt x 383.031pt>
+<./images//verilogtortlil.png, id=730, 522.753pt x 383.031pt>
 File: ./images//verilogtortlil.png Graphic file (type png)
 <use ./images//verilogtortlil.png>
-Package pdftex.def Info: ./images//verilogtortlil.png  used on input line 826.
+Package pdftex.def Info: ./images//verilogtortlil.png  used on input line 828.
 (pdftex.def)             Requested size: 261.37585pt x 191.51503pt.
-[17]
-Underfull \hbox (badness 10000) in paragraph at lines 876--881
+[18]
+Underfull \hbox (badness 10000) in paragraph at lines 878--883
 
  []
 
-[18 <./images//verilogtortlil.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 894--902
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 894--902
-
- []
-
-[19]
-Kapitel 2.
-
-Underfull \hbox (badness 10000) in paragraph at lines 945--950
-
- []
-
-[20
-
-]
-Underfull \hbox (badness 10000) in paragraph at lines 979--982
-
- []
-
-[21]
-<./images//Publikation1.png, id=855, 580.0872pt x 604.659pt>
-File: ./images//Publikation1.png Graphic file (type png)
-<use ./images//Publikation1.png>
-Package pdftex.def Info: ./images//Publikation1.png  used on input line 1063.
-(pdftex.def)             Requested size: 348.05501pt x 362.79819pt.
- [22]
-Underfull \hbox (badness 10000) in paragraph at lines 1070--1074
-
- []
-
-[23 <./images//Publikation1.png>] [24] [25]
-Underfull \hbox (badness 10000) in paragraph at lines 1265--1274
+[19 <./images//verilogtortlil.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 896--904
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1265--1274
+Underfull \hbox (badness 10000) in paragraph at lines 896--904
 
  []
 
-[26]
-Underfull \hbox (badness 10000) in paragraph at lines 1303--1306
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1303--1306
-
- []
-
-<./images//assignstmt.png, id=1076, 1012.78375pt x 520.94624pt>
-File: ./images//assignstmt.png Graphic file (type png)
-<use ./images//assignstmt.png>
-Package pdftex.def Info: ./images//assignstmt.png  used on input line 1326.
-(pdftex.def)             Requested size: 405.10632pt x 208.3748pt.
-[27]
-Underfull \hbox (badness 10000) in paragraph at lines 1334--1338
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1338--1342
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1344--1348
-
- []
-
-[28 <./images//assignstmt.png>]
+[20]
 Kapitel 3.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1368--1373
+Underfull \hbox (badness 10000) in paragraph at lines 947--952
+
+ []
+
+[21
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 981--984
+
+ []
+
+[22]
+<./images//Publikation1.png, id=869, 580.0872pt x 604.659pt>
+File: ./images//Publikation1.png Graphic file (type png)
+<use ./images//Publikation1.png>
+Package pdftex.def Info: ./images//Publikation1.png  used on input line 1065.
+(pdftex.def)             Requested size: 348.05501pt x 362.79819pt.
+ [23]
+Underfull \hbox (badness 10000) in paragraph at lines 1072--1076
+
+ []
+
+[24 <./images//Publikation1.png>] [25] [26]
+Underfull \hbox (badness 10000) in paragraph at lines 1267--1276
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1376--1380
+Underfull \hbox (badness 10000) in paragraph at lines 1267--1276
+
+ []
+
+[27]
+Underfull \hbox (badness 10000) in paragraph at lines 1305--1308
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1381--1385
+Underfull \hbox (badness 10000) in paragraph at lines 1305--1308
+
+ []
+
+<./images//assignstmt.png, id=1090, 1012.78375pt x 520.94624pt>
+File: ./images//assignstmt.png Graphic file (type png)
+<use ./images//assignstmt.png>
+Package pdftex.def Info: ./images//assignstmt.png  used on input line 1328.
+(pdftex.def)             Requested size: 405.10632pt x 208.3748pt.
+[28]
+Underfull \hbox (badness 10000) in paragraph at lines 1336--1340
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1391--1397
+Underfull \hbox (badness 10000) in paragraph at lines 1340--1344
 
  []
 
 
-Overfull \hbox (11.12302pt too wide) in paragraph at lines 1391--1397
+Underfull \hbox (badness 10000) in paragraph at lines 1346--1350
+
+ []
+
+[29 <./images//assignstmt.png>]
+Kapitel 4.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1370--1375
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1378--1382
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1383--1387
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1393--1399
+
+ []
+
+
+Overfull \hbox (11.12302pt too wide) in paragraph at lines 1393--1399
 \OT1/cmr/m/n/10.95 Dynamische Wort-gr[]o^^Yen m[]ussen de-ter-mi-nis-tisch fest-ge-legt wer-den. Daf[]ur wer-den AST[]CASE
  []
 
-[29
+[30
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 1398--1402
+Underfull \hbox (badness 10000) in paragraph at lines 1400--1404
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1402--1406
+Underfull \hbox (badness 10000) in paragraph at lines 1404--1408
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1427--1431
+Underfull \hbox (badness 10000) in paragraph at lines 1429--1433
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1448--1454
+Underfull \hbox (badness 10000) in paragraph at lines 1450--1456
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1448--1454
-
- []
-
-[30]
-Underfull \hbox (badness 10000) in paragraph at lines 1490--1494
+Underfull \hbox (badness 10000) in paragraph at lines 1450--1456
 
  []
 
 [31]
-Underfull \hbox (badness 10000) in paragraph at lines 1522--1528
+Underfull \hbox (badness 10000) in paragraph at lines 1492--1496
 
  []
 
 [32]
-Underfull \hbox (badness 10000) in paragraph at lines 1579--1591
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1579--1591
+Underfull \hbox (badness 10000) in paragraph at lines 1524--1530
 
  []
 
 [33]
-Underfull \hbox (badness 10000) in paragraph at lines 1624--1625
+Underfull \hbox (badness 10000) in paragraph at lines 1583--1595
 
  []
 
-<./images//process.png, id=1319, 750.805pt x 344.28625pt>
-File: ./images//process.png Graphic file (type png)
-<use ./images//process.png>
-Package pdftex.def Info: ./images//process.png  used on input line 1661.
-(pdftex.def)             Requested size: 375.40158pt x 172.1427pt.
-[34 <./images//process.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1713--1725
+
+Underfull \hbox (badness 10000) in paragraph at lines 1583--1595
+
+ []
+
+[34]
+Underfull \hbox (badness 10000) in paragraph at lines 1628--1629
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1630--1660
 
  []
 
 [35]
-Overfull \hbox (5.11272pt too wide) in paragraph at lines 1802--1805
+<./images//process.png, id=1374, 750.805pt x 344.28625pt>
+File: ./images//process.png Graphic file (type png)
+<use ./images//process.png>
+Package pdftex.def Info: ./images//process.png  used on input line 1748.
+(pdftex.def)             Requested size: 375.40158pt x 172.1427pt.
+ [36 <./images//process.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1800--1812
+
+ []
+
+[37] [38]
+Overfull \hbox (5.11272pt too wide) in paragraph at lines 1889--1892
 \OT1/cmr/m/n/10.95 Bekommt R[]uckgabe der genRT-LIL() Funk-ti-on zu-ge-wie-sen. R[]uckgabetyp ist RT-LIL::SigSpec 
  []
 
-[36] [37]
-Underfull \hbox (badness 10000) in paragraph at lines 1901--1904
-
- []
-
-[38]
-Underfull \hbox (badness 10000) in paragraph at lines 1984--1985
-
- []
-
 [39]
-Underfull \hbox (badness 10000) in paragraph at lines 2022--2028
+Underfull \hbox (badness 10000) in paragraph at lines 1988--1991
 
  []
 
-[40]
-Overfull \hbox (0.9151pt too wide) in paragraph at lines 2054--2055
+[40] [41]
+Underfull \hbox (badness 10000) in paragraph at lines 2071--2072
+
+ []
+
+[42]
+Underfull \hbox (badness 10000) in paragraph at lines 2109--2115
+
+ []
+
+
+Overfull \hbox (0.9151pt too wide) in paragraph at lines 2141--2142
 []\OT1/cmr/m/n/10.95 Im Par-ser wer-den die Wer-te der lin-ken und rech-ten Sei-te der Zu-wei-sung wie folgt []ubergeben: 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2073--2076
+Underfull \hbox (badness 10000) in paragraph at lines 2160--2163
 
  []
 
-[41]
-Underfull \hbox (badness 10000) in paragraph at lines 2109--2113
+[43]
+Underfull \hbox (badness 10000) in paragraph at lines 2196--2200
 
  []
 
 
-Overfull \hbox (1.26689pt too wide) in paragraph at lines 2131--2137
+Overfull \hbox (1.26689pt too wide) in paragraph at lines 2218--2224
 \OT1/cmr/m/n/10.95 Der Vek-tor-sta-pel \OT1/cmr/m/it/10.95 ac-ti-ons \OT1/cmr/m/n/10.95 wird durch-i-te-riert. Die \OT1/cmr/m/it/10.95 RT-LIL::SigSig \OT1/cmr/m/n/10.95 Ob-jek-te sind C++ \OT1/cmr/m/it/10.95 std::pair
  []
 
-[42] [43]
-Underfull \hbox (badness 10000) in paragraph at lines 2344--2348
+[44] [45]
+Underfull \hbox (badness 10000) in paragraph at lines 2431--2435
 
  []
 
-[44]
-Overfull \hbox (20.58481pt too wide) in paragraph at lines 2433--2434
+[46] [47]
+Overfull \hbox (20.58481pt too wide) in paragraph at lines 2520--2521
 []\OT1/cmr/m/it/10.95 Append this[]case[]eq[]lvalue to subst[]lvalue[]from and ap-pend this[]case[]eq[]ltemp to subst[]lvalue[]to. 
  []
 
-[45]
-Overfull \hbox (3.71466pt too wide) in paragraph at lines 2473--2474
+[48]
+Overfull \hbox (3.71466pt too wide) in paragraph at lines 2560--2561
 []\OT1/cmr/m/it/10.95 The si-gnals from this[]case[]eq[]lvalue are re-mo-ved from the subst[]rvalue[]from/subst[]rvalue[]to-
  []
 
 
-Overfull \hbox (34.74791pt too wide) in paragraph at lines 2474--2475
+Overfull \hbox (34.74791pt too wide) in paragraph at lines 2561--2562
 []\OT1/cmr/m/it/10.95 The va-lue of this[]case[]eq[]lvalue is ap-pen-ded to subst[]rvalue[]from and the va-lue of this[]case[]eq[]ltemp
  []
 
-[46]
-Underfull \hbox (badness 10000) in paragraph at lines 2505--2508
+
+Underfull \hbox (badness 10000) in paragraph at lines 2592--2595
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2505--2508
+Underfull \hbox (badness 10000) in paragraph at lines 2592--2595
 
  []
 
-[47]
-Underfull \hbox (badness 10000) in paragraph at lines 2540--2552
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2540--2552
+[49]
+Underfull \hbox (badness 10000) in paragraph at lines 2627--2639
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2593--2610
+Underfull \hbox (badness 10000) in paragraph at lines 2627--2639
 
  []
 
-[48] (/usr/local/texlive/2021/texmf-dist/tex/latex/listings/lstlang1.sty
+[50]
+Underfull \hbox (badness 10000) in paragraph at lines 2680--2697
+
+ []
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2020/03/24 1.8d listings language file
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/listings/lstlang2.sty
 File: lstlang2.sty 2020/03/24 1.8d listings language file
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/listings/lstlang3.sty
 File: lstlang3.sty 2020/03/24 1.8d listings language file
-)
-Underfull \hbox (badness 10000) in paragraph at lines 2638--2645
+) [51]
+Underfull \hbox (badness 10000) in paragraph at lines 2725--2732
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2646--2653
+Underfull \hbox (badness 10000) in paragraph at lines 2733--2740
 
  []
 
-[49] [50]
-Underfull \hbox (badness 10000) in paragraph at lines 2735--2740
+[52] [53]
+Underfull \hbox (badness 10000) in paragraph at lines 2822--2827
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2735--2740
+Underfull \hbox (badness 10000) in paragraph at lines 2822--2827
 
  []
 
-[51]
-Underfull \hbox (badness 10000) in paragraph at lines 2767--2771
 
- []
-
-[52]
-Underfull \hbox (badness 10000) in paragraph at lines 2810--2815
-
- []
-
-[53]
-Underfull \hbox (badness 10000) in paragraph at lines 2858--2868
+Underfull \hbox (badness 10000) in paragraph at lines 2854--2858
 
  []
 
 [54]
-Underfull \hbox (badness 10000) in paragraph at lines 2936--2940
+Underfull \hbox (badness 10000) in paragraph at lines 2897--2902
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 2949--2952
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2956--2987
+[55]
+Underfull \hbox (badness 10000) in paragraph at lines 2945--2955
 
  []
 
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[55] [56]
-Underfull \hbox (badness 10000) in paragraph at lines 3098--3110
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3098--3110
+[56]
+Underfull \hbox (badness 10000) in paragraph at lines 3023--3027
 
  []
 
 [57]
-Overfull \hbox (17.63231pt too wide) in paragraph at lines 3136--3140
+Underfull \hbox (badness 10000) in paragraph at lines 3036--3039
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3043--3074
+
+ []
+
+[58] [59]
+Underfull \hbox (badness 10000) in paragraph at lines 3185--3197
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3185--3197
+
+ []
+
+[60]
+Overfull \hbox (17.63231pt too wide) in paragraph at lines 3223--3227
 \OT1/cmr/m/n/10.95 Synchronisation mit \OT1/cmr/m/it/10.95 High\OT1/cmr/m/n/10.95 -Level. \OT1/cmr/m/it/10.95 rst-val \OT1/cmr/m/n/10.95 ist nicht kon-stant. Das hei^^Yt, dass sich der R[]ucksetzwert
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3136--3140
+Underfull \hbox (badness 10000) in paragraph at lines 3223--3227
 
  []
 
-[58]
+[61]
+Underfull \hbox (badness 10000) in paragraph at lines 3284--3291
 
-LaTeX Warning: Empty bibliography on input line 3197.
+ []
 
-[59] (/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/.texpadtmp/Yosys Interpreter.aux)
-Package rerunfilecheck Info: File `"Yosys Interpreter".out' has not changed.
-(rerunfilecheck)             Checksum: D197F3B8580468A73D2B07F8C02A0256;4036.
+[62] [63] [64] [65] [66] [67] [68]
+
+LaTeX Warning: Empty bibliography on input line 3562.
+
+[69] [70]
+Kapitel 5.
+
+Underfull \hbox (badness 10000) in paragraph at lines 3566--3568
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3579--3584
+
+ []
+
+[71
+
+] (/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/.texpadtmp/Yosys Interpreter.aux)
+
+Package rerunfilecheck Warning: File `"Yosys Interpreter".out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `"Yosys Interpreter".out':
+(rerunfilecheck)             Before: 80A698C3551617A3424974036724C0F3;4219
+(rerunfilecheck)             After:  F0B1D5627664107F7DCDBE9CAB9B5155;4329.
 Package logreq Info: Writing requests to '"Yosys Interpreter".run.xml'.
 \openout1 = `"Yosys Interpreter.run.xml"'.
 
  ) 
 Here is how much of TeX's memory you used:
- 23380 strings out of 478994
- 383914 string characters out of 5858184
- 1462799 words of memory out of 5000000
- 38560 multiletter control sequences out of 15000+600000
+ 24272 strings out of 478994
+ 396659 string characters out of 5858184
+ 1775799 words of memory out of 5000000
+ 39086 multiletter control sequences out of 15000+600000
  412800 words of font info for 58 fonts, out of 8000000 for 9000
  1143 hyphenation exceptions out of 8191
  73i,17n,74p,752b,2241s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{subsection.4.3.5} has been referenced but does not exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.4.3.4} has been referenced but does not exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.4.3.3} has been referenced but does not exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.4.3.2} has been referenced but does not exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.4.2.2} has been referenced but does not exist, replaced by a fixed one
+
 {/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb>
-Output written on "/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/.texpadtmp/Yosys Interpreter.pdf" (60 pages, 834844 bytes).
+Output written on "/Users/raphaelbiermann/OneDrive - FHDO - PROD/JOB Synthese/Latex/.texpadtmp/Yosys Interpreter.pdf" (72 pages, 877366 bytes).
 PDF statistics:
- 2884 PDF objects out of 2984 (max. 8388607)
- 2770 compressed objects within 28 object streams
- 2067 named destinations out of 2073 (max. 500000)
- 221 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 3374 PDF objects out of 3580 (max. 8388607)
+ 3243 compressed objects within 33 object streams
+ 2433 named destinations out of 2487 (max. 500000)
+ 237 words of extra memory for PDF output out of 10000 (max. 10000000)
 
